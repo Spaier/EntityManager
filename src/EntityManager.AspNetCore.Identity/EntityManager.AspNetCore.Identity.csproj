@@ -23,10 +23,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.AspNetCore.Mvc" Version="2.0.1" />
-  </ItemGroup>
-
-  <ItemGroup>
+    <ProjectReference Include="..\EntityManager.AspNetCore\EntityManager.AspNetCore.csproj" />
     <ProjectReference Include="..\EntityManager.Identity\EntityManager.Identity.csproj" />
   </ItemGroup>
 
