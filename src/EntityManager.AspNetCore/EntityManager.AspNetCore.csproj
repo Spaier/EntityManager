@@ -12,6 +12,8 @@
     <Company>Spaier</Company>
     <Authors>Pavel Levchuk</Authors>
     <Copyright>Copyright (c) 2017 Pavel Levchuk</Copyright>
+    <SignAssembly>true</SignAssembly>
+    <AssemblyOriginatorKeyFile>em_aspnc.pfx</AssemblyOriginatorKeyFile>
   </PropertyGroup>
 
   <ItemGroup>
