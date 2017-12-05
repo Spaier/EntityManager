@@ -5,6 +5,7 @@
     <LangVersion>latest</LangVersion>
     <Version>0.0.1</Version>
     <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
+    <PackageProjectUrl>https://github.com/Spaier/EntityManager</PackageProjectUrl>
     <PackageLicenseUrl>https://github.com/Spaier/EntityManager/blob/master/LICENSE</PackageLicenseUrl>
     <RepositoryUrl>https://github.com/Spaier/EntityManager</RepositoryUrl>
     <Company>Spaier</Company>
