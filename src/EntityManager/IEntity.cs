@@ -3,14 +3,14 @@
 namespace EntityManager
 {
     /// <summary>
-    /// Interface for accessing PK.
+    /// Interface for accessing primary key.
     /// </summary>
-    /// <typeparam name="TKey">Key type.</typeparam>
+    /// <typeparam name="TKey">The type used for the primary key for the entity.</typeparam>
     public interface IEntity<TKey>
         where TKey : IEquatable<TKey>
     {
         /// <summary>
-        /// Id of the Item.
+        /// Id of the entity.
         /// </summary>
         TKey Id { get; set; }
     }

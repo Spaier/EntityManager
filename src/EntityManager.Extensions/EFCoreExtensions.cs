@@ -23,232 +23,91 @@ namespace Microsoft.EntityFrameworkCore
 
         #region AnyByEntity
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <typeparam name="TEntity"></typeparam>
-        /// <param name="context"></param>
-        /// <param name="entity"></param>
-        /// <returns></returns>
         public static bool AnyByEntity<TEntity>(this DbContext context, TEntity entity)
             where TEntity : class
             => context.Set<TEntity>().AsNoTracking().AnyByEntity(context, entity);
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <typeparam name="TEntity"></typeparam>
-        /// <param name="context"></param>
-        /// <param name="entity"></param>
-        /// <returns></returns>
         public static Task<bool> AnyByEntityAsync<TEntity>(this DbContext context, TEntity entity)
             where TEntity : class
             => context.Set<TEntity>().AsNoTracking().AnyByEntityAsync(context, entity);
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <typeparam name="TEntity"></typeparam>
-        /// <param name="context"></param>
-        /// <param name="entity"></param>
-        /// <param name="cancellationToken"></param>
-        /// <returns></returns>
         public static Task<bool> AnyAsyncEntity<TEntity>(this DbContext context, TEntity entity, CancellationToken cancellationToken)
             where TEntity : class
             => context.Set<TEntity>().AsNoTracking().AnyByEntityAsync(context, entity, cancellationToken);
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <typeparam name="TEntity"></typeparam>
-        /// <param name="queryable"></param>
-        /// <param name="context"></param>
-        /// <param name="entity"></param>
-        /// <returns></returns>
         public static bool AnyByEntity<TEntity>(this IQueryable<TEntity> queryable, DbContext context, TEntity entity)
             where TEntity : class
             => queryable.Any(BuildCheck(context, entity));
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <typeparam name="TEntity"></typeparam>
-        /// <param name="queryable"></param>
-        /// <param name="context"></param>
-        /// <param name="entity"></param>
-        /// <returns></returns>
         public static Task<bool> AnyByEntityAsync<TEntity>(this IQueryable<TEntity> queryable, DbContext context, TEntity entity)
             where TEntity : class
             => queryable.AnyAsync(BuildCheck(context, entity));
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <typeparam name="TEntity"></typeparam>
-        /// <param name="queryable"></param>
-        /// <param name="context"></param>
-        /// <param name="entity"></param>
-        /// <param name="cancellationToken"></param>
-        /// <returns></returns>
         public static Task<bool> AnyByEntityAsync<TEntity>(this IQueryable<TEntity> queryable, DbContext context, TEntity entity,
             CancellationToken cancellationToken)
             where TEntity : class
             => queryable.AnyAsync(BuildCheck(context, entity), cancellationToken);
 
-        #endregion
+        #endregion AnyByEntity
 
         #region AnyByPrimaryKey
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <typeparam name="TEntity"></typeparam>
-        /// <param name="context"></param>
-        /// <param name="keyValues"></param>
-        /// <returns></returns>
         public static bool AnyByPrimaryKey<TEntity>(this DbContext context, params object[] keyValues)
             where TEntity : class
             => context.Set<TEntity>().AsNoTracking().AnyByPrimaryKey(context, keyValues);
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <typeparam name="TEntity"></typeparam>
-        /// <param name="context"></param>
-        /// <param name="keyValues"></param>
-        /// <returns></returns>
         public static Task<bool> AnyByPrimaryKeyAsync<TEntity>(this DbContext context, params object[] keyValues)
             where TEntity : class
             => context.Set<TEntity>().AsNoTracking().AnyByPrimaryKeyAsync(context, keyValues);
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <typeparam name="TEntity"></typeparam>
-        /// <param name="context"></param>
-        /// <param name="keyValues"></param>
-        /// <param name="cancellationToken"></param>
-        /// <returns></returns>
         public static Task<bool> AnyByPrimaryKeyAsync<TEntity>(this DbContext context, object[] keyValues, CancellationToken cancellationToken)
             where TEntity : class
             => context.Set<TEntity>().AsNoTracking().AnyByPrimaryKeyAsync(context, keyValues, cancellationToken);
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <typeparam name="TEntity"></typeparam>
-        /// <param name="queryable"></param>
-        /// <param name="context"></param>
-        /// <param name="keyValues"></param>
-        /// <returns></returns>
         public static bool AnyByPrimaryKey<TEntity>(this IQueryable<TEntity> queryable, DbContext context, params object[] keyValues)
             where TEntity : class
             => queryable.Any(BuildCheck<TEntity>(context, keyValues));
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <typeparam name="TEntity"></typeparam>
-        /// <param name="queryable"></param>
-        /// <param name="context"></param>
-        /// <param name="keyValues"></param>
-        /// <returns></returns>
         public static Task<bool> AnyByPrimaryKeyAsync<TEntity>(this IQueryable<TEntity> queryable, DbContext context, params object[] keyValues)
             where TEntity : class
             => queryable.AnyAsync(BuildCheck<TEntity>(context, keyValues));
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <typeparam name="TEntity"></typeparam>
-        /// <param name="queryable"></param>
-        /// <param name="context"></param>
-        /// <param name="keyValues"></param>
-        /// <param name="cancellationToken"></param>
-        /// <returns></returns>
         public static Task<bool> AnyByPrimaryKeyAsync<TEntity>(this IQueryable<TEntity> queryable, DbContext context, object[] keyValues,
             CancellationToken cancellationToken)
             where TEntity : class
             => queryable.AnyAsync(BuildCheck<TEntity>(context, keyValues), cancellationToken);
 
-        #endregion
+        #endregion AnyByPrimaryKey
 
         #region GetByPrimaryKey
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <typeparam name="TEntity"></typeparam>
-        /// <param name="context"></param>
-        /// <param name="keyValues"></param>
-        /// <returns></returns>
         public static TEntity GetByPrimaryKey<TEntity>(this DbContext context, params object[] keyValues)
             where TEntity : class
             => context.Set<TEntity>().AsNoTracking().GetByPrimaryKey(context, keyValues);
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <typeparam name="TEntity"></typeparam>
-        /// <param name="context"></param>
-        /// <param name="keyValues"></param>
-        /// <returns></returns>
         public static Task<TEntity> GetByPrimaryKeyAsync<TEntity>(this DbContext context, params object[] keyValues)
             where TEntity : class
             => context.Set<TEntity>().AsNoTracking().GetByPrimaryKeyAsync(context, keyValues);
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <typeparam name="TEntity"></typeparam>
-        /// <param name="context"></param>
-        /// <param name="keyValues"></param>
-        /// <param name="cancellationToken"></param>
-        /// <returns></returns>
         public static Task<TEntity> GetByPrimaryKeyAsync<TEntity>(this DbContext context, object[] keyValues, CancellationToken cancellationToken)
             where TEntity : class
             => context.Set<TEntity>().AsNoTracking().GetByPrimaryKeyAsync(context, keyValues, cancellationToken);
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <typeparam name="TEntity"></typeparam>
-        /// <param name="queryable"></param>
-        /// <param name="context"></param>
-        /// <param name="keyValues"></param>
-        /// <returns></returns>
         public static TEntity GetByPrimaryKey<TEntity>(this IQueryable<TEntity> queryable, DbContext context, params object[] keyValues)
             where TEntity : class
             => queryable.SingleOrDefault(BuildCheck<TEntity>(context, keyValues));
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <typeparam name="TEntity"></typeparam>
-        /// <param name="queryable"></param>
-        /// <param name="context"></param>
-        /// <param name="keyValues"></param>
-        /// <returns></returns>
         public static Task<TEntity> GetByPrimaryKeyAsync<TEntity>(this IQueryable<TEntity> queryable, DbContext context,
             params object[] keyValues)
             where TEntity : class
             => queryable.SingleOrDefaultAsync(BuildCheck<TEntity>(context, keyValues));
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <typeparam name="TEntity"></typeparam>
-        /// <param name="queryable"></param>
-        /// <param name="context"></param>
-        /// <param name="keyValues"></param>
-        /// <param name="cancellationToken"></param>
-        /// <returns></returns>
         public static Task<TEntity> GetByPrimaryKeyAsync<TEntity>(this IQueryable<TEntity> queryable, DbContext context, object[] keyValues,
             CancellationToken cancellationToken)
             where TEntity : class
             => queryable.SingleOrDefaultAsync(BuildCheck<TEntity>(context, keyValues), cancellationToken);
 
-        #endregion
+        #endregion GetByPrimaryKey
 
         /// <summary>
         /// Converts values from string to clr.

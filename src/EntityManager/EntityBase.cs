@@ -3,14 +3,14 @@
 namespace EntityManager
 {
     /// <summary>
-    /// Base Item with ID of type <typeparamref name="TKey"/>.
+    /// Base entity with id of type <typeparamref name="TKey"/>.
     /// </summary>
-    /// <typeparam name="TKey">Key type.</typeparam>
+    /// <typeparam name="TKey">The type used for the primary key for the entity.</typeparam>
     public abstract class EntityBase<TKey> : IEntity<TKey>
         where TKey : IEquatable<TKey>
     {
         /// <summary>
-        /// Id of the item.
+        /// Id of the entity.
         /// </summary>
         public virtual TKey Id { get; set; }
     }
