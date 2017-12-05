@@ -279,7 +279,7 @@ namespace Microsoft.EntityFrameworkCore
         /// <typeparam name="TEntity"></typeparam>
         /// <param name="context"></param>
         /// <returns></returns>
-        public static IReadOnlyList<IProperty> GetKeyProperties<TEntity>(this DbContext context)
+        internal static IReadOnlyList<IProperty> GetKeyProperties<TEntity>(this DbContext context)
             => (context as IDbContextDependencies).Model.FindEntityType(typeof(TEntity)).FindPrimaryKey().Properties;
 
         private static Expression<Func<TEntity, bool>> BuildCheck<TEntity>(DbContext context, TEntity entity)
