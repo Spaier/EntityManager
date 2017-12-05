@@ -3,16 +3,13 @@
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
     <LangVersion>latest</LangVersion>
+    <Version>1.0.0</Version>
     <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
-    <Authors>Pavel Levchu</Authors>
-    <Company>Spaier</Company>
-    <Copyright>Copyright (c) 2017 Pavel Levchuk</Copyright>
     <PackageLicenseUrl>https://github.com/Spaier/EntityManager/blob/master/LICENSE</PackageLicenseUrl>
     <RepositoryUrl>https://github.com/Spaier/EntityManager</RepositoryUrl>
-    <AssemblyVersion>1.0.0.0</AssemblyVersion>
-    <FileVersion>1.0.0.0</FileVersion>
-    <SignAssembly>true</SignAssembly>
-    <AssemblyOriginatorKeyFile>em_ex.pfx</AssemblyOriginatorKeyFile>
+    <Company>Spaier</Company>
+    <Authors>Pavel Levchuk</Authors>
+    <Copyright>Copyright (c) 2017 Pavel Levchuk</Copyright>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
