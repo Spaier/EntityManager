@@ -10,6 +10,7 @@
     <Company>Spaier</Company>
     <Authors>Pavel Levchuk</Authors>
     <Copyright>Copyright (c) 2017 Pavel Levchuk</Copyright>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
