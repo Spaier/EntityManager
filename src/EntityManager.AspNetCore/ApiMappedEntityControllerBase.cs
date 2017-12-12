@@ -50,16 +50,18 @@ namespace EntityManager.AspNetCore
         public override Task<IActionResult> PutEntity([FromBody, Required] TEntity entity) => throw new NotSupportedException();
 
         /// <summary>
-        /// Adds an entity and returns 204.
+        /// Convets a viewmodel to an entity and adds it to a database and returns 204.
         /// </summary>
         /// <param name="entityViewModel"></param>
         /// <returns></returns>
         /// <response code="204">Success.</response>
         [ProducesResponseType(204)]
+        [HttpPost]
         public Task<IActionResult> PostEntity([FromBody, Required] TEntityViewModel entityViewModel) => PostEntityInner(entityViewModel);
 
         /// <summary>
-        /// 
+        /// Convets a viewmodel to an entity, updates it and returns 204 or
+        /// 404 if it doesn't exist.
         /// </summary>
         /// <param name="entityViewModel"></param>
         /// <returns></returns>
@@ -67,10 +69,11 @@ namespace EntityManager.AspNetCore
         /// <response code="404">Not Found.</response>
         [ProducesResponseType(204)]
         [ProducesResponseType(404)]
+        [HttpPut]
         public Task<IActionResult> PutEntity([FromBody, Required] TEntityViewModel entityViewModel) => PutEntityInner(entityViewModel);
 
         /// <summary>
-        /// 
+        /// Convets a viewmodel to an entity, adds it to a database and returns <see cref="NoContentResult"/>.
         /// </summary>
         /// <param name="entityViewModel"></param>
         protected Task<IActionResult> PostEntityInner(TEntityViewModel entityViewModel)
@@ -80,7 +83,8 @@ namespace EntityManager.AspNetCore
         }
 
         /// <summary>
-        /// 
+        /// Convets a viewmodel to an entity, updates it and returns <see cref="NoContentResult"/> or
+        /// <see cref="NotFoundResult"/> if it doesn't exist.
         /// </summary>
         /// <param name="entityViewModel"></param>
         protected Task<IActionResult> PutEntityInner(TEntityViewModel entityViewModel)
