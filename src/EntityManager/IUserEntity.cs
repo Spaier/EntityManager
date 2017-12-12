@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace EntityManager.Identity
+namespace EntityManager
 {
     /// <summary>
     /// Entity owned by a user.

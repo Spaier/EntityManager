@@ -31,7 +31,7 @@ namespace Microsoft.EntityFrameworkCore
             where TEntity : class
             => context.Set<TEntity>().AsNoTracking().AnyByEntityAsync(context, entity);
 
-        public static Task<bool> AnyAsyncEntity<TEntity>(this DbContext context, TEntity entity, CancellationToken cancellationToken)
+        public static Task<bool> AnyAsyncByEntity<TEntity>(this DbContext context, TEntity entity, CancellationToken cancellationToken)
             where TEntity : class
             => context.Set<TEntity>().AsNoTracking().AnyByEntityAsync(context, entity, cancellationToken);
 
@@ -81,14 +81,36 @@ namespace Microsoft.EntityFrameworkCore
 
         #region GetByPrimaryKey
 
+        /// <summary>
+        /// Return the entity with given primary key as no tracking.
+        /// </summary>
+        /// <typeparam name="TEntity"></typeparam>
+        /// <param name="context"></param>
+        /// <param name="keyValues"></param>
+        /// <returns></returns>
         public static TEntity GetByPrimaryKey<TEntity>(this DbContext context, params object[] keyValues)
             where TEntity : class
             => context.Set<TEntity>().AsNoTracking().GetByPrimaryKey(context, keyValues);
 
+        /// <summary>
+        /// Return the entity with given primary key as no tracking.
+        /// </summary>
+        /// <typeparam name="TEntity"></typeparam>
+        /// <param name="context"></param>
+        /// <param name="keyValues"></param>
+        /// <returns></returns>
         public static Task<TEntity> GetByPrimaryKeyAsync<TEntity>(this DbContext context, params object[] keyValues)
             where TEntity : class
             => context.Set<TEntity>().AsNoTracking().GetByPrimaryKeyAsync(context, keyValues);
 
+        /// <summary>
+        /// Return the entity with given primary key as no tracking.
+        /// </summary>
+        /// <typeparam name="TEntity"></typeparam>
+        /// <param name="context"></param>
+        /// <param name="keyValues"></param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
         public static Task<TEntity> GetByPrimaryKeyAsync<TEntity>(this DbContext context, object[] keyValues, CancellationToken cancellationToken)
             where TEntity : class
             => context.Set<TEntity>().AsNoTracking().GetByPrimaryKeyAsync(context, keyValues, cancellationToken);
@@ -133,7 +155,7 @@ namespace Microsoft.EntityFrameworkCore
         }
 
         /// <summary>
-        /// Gets key properties of entity.
+        /// Gets key properties of an entity.
         /// </summary>
         /// <typeparam name="TEntity"></typeparam>
         /// <param name="context"></param>

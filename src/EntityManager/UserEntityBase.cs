@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace EntityManager.Identity
+namespace EntityManager
 {
     /// <summary>
     /// Base user's item with given id, user's id and user types.
