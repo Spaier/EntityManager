@@ -25,6 +25,7 @@ namespace EntityManager.AspNetCore
         /// Create with given database context.
         /// </summary>
         /// <param name="context"></param>
+        /// <exception cref="ArgumentNullException"></exception>
         public ApiEntityControllerBase(TDbContext context)
         {
             _context = context ?? throw new ArgumentNullException(nameof(context));
