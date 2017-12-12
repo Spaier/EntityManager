@@ -23,26 +23,73 @@ namespace Microsoft.EntityFrameworkCore
 
         #region AnyByEntity
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <typeparam name="TEntity">Type of the entity.</typeparam>
+        /// <param name="context"></param>
+        /// <param name="entity"></param>
+        /// <returns></returns>
         public static bool AnyByEntity<TEntity>(this DbContext context, TEntity entity)
             where TEntity : class
             => context.Set<TEntity>().AsNoTracking().AnyByEntity(context, entity);
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <typeparam name="TEntity">Type of the entity.</typeparam>
+        /// <param name="context"></param>
+        /// <param name="entity"></param>
+        /// <returns></returns>
         public static Task<bool> AnyByEntityAsync<TEntity>(this DbContext context, TEntity entity)
             where TEntity : class
             => context.Set<TEntity>().AsNoTracking().AnyByEntityAsync(context, entity);
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <typeparam name="TEntity">Type of the entity.</typeparam>
+        /// <param name="context"></param>
+        /// <param name="entity"></param>
+        /// <param name="cancellationToken">A <see cref="CancellationToken"/> to observe while waiting for the task to complete.</param>
+        /// <returns></returns>
         public static Task<bool> AnyAsyncByEntity<TEntity>(this DbContext context, TEntity entity, CancellationToken cancellationToken)
             where TEntity : class
             => context.Set<TEntity>().AsNoTracking().AnyByEntityAsync(context, entity, cancellationToken);
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <typeparam name="TEntity">Type of the entity.</typeparam>
+        /// <param name="queryable"></param>
+        /// <param name="context"></param>
+        /// <param name="entity"></param>
+        /// <returns></returns>
         public static bool AnyByEntity<TEntity>(this IQueryable<TEntity> queryable, DbContext context, TEntity entity)
             where TEntity : class
             => queryable.Any(BuildCheck(context, entity));
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <typeparam name="TEntity">Type of the entity.</typeparam>
+        /// <param name="queryable"></param>
+        /// <param name="context"></param>
+        /// <param name="entity"></param>
+        /// <returns></returns>
         public static Task<bool> AnyByEntityAsync<TEntity>(this IQueryable<TEntity> queryable, DbContext context, TEntity entity)
             where TEntity : class
             => queryable.AnyAsync(BuildCheck(context, entity));
 
+        /// <summary>
+        /// Asynchronously determines whether an entity with the primary key of an <paramref name="entity"/> exists in a database.
+        /// </summary>
+        /// <typeparam name="TEntity">Type of the entity.</typeparam>
+        /// <param name="queryable"></param>
+        /// <param name="context"></param>
+        /// <param name="entity"></param>
+        /// <param name="cancellationToken">A <see cref="CancellationToken"/> to observe while waiting for the task to complete.</param>
+        /// <returns></returns>
         public static Task<bool> AnyByEntityAsync<TEntity>(this IQueryable<TEntity> queryable, DbContext context, TEntity entity,
             CancellationToken cancellationToken)
             where TEntity : class
@@ -52,26 +99,73 @@ namespace Microsoft.EntityFrameworkCore
 
         #region AnyByPrimaryKey
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <typeparam name="TEntity">Type of the entity.</typeparam>
+        /// <param name="context"></param>
+        /// <param name="keyValues"></param>
+        /// <returns></returns>
         public static bool AnyByPrimaryKey<TEntity>(this DbContext context, params object[] keyValues)
             where TEntity : class
             => context.Set<TEntity>().AsNoTracking().AnyByPrimaryKey(context, keyValues);
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <typeparam name="TEntity">Type of the entity.</typeparam>
+        /// <param name="context"></param>
+        /// <param name="keyValues"></param>
+        /// <returns></returns>
         public static Task<bool> AnyByPrimaryKeyAsync<TEntity>(this DbContext context, params object[] keyValues)
             where TEntity : class
             => context.Set<TEntity>().AsNoTracking().AnyByPrimaryKeyAsync(context, keyValues);
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <typeparam name="TEntity">Type of the entity.</typeparam>
+        /// <param name="context"></param>
+        /// <param name="keyValues"></param>
+        /// <param name="cancellationToken">A <see cref="CancellationToken"/> to observe while waiting for the task to complete.</param>
+        /// <returns></returns>
         public static Task<bool> AnyByPrimaryKeyAsync<TEntity>(this DbContext context, object[] keyValues, CancellationToken cancellationToken)
             where TEntity : class
             => context.Set<TEntity>().AsNoTracking().AnyByPrimaryKeyAsync(context, keyValues, cancellationToken);
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <typeparam name="TEntity">Type of the entity.</typeparam>
+        /// <param name="queryable"></param>
+        /// <param name="context"></param>
+        /// <param name="keyValues"></param>
+        /// <returns></returns>
         public static bool AnyByPrimaryKey<TEntity>(this IQueryable<TEntity> queryable, DbContext context, params object[] keyValues)
             where TEntity : class
             => queryable.Any(BuildCheck<TEntity>(context, keyValues));
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <typeparam name="TEntity">Type of the entity.</typeparam>
+        /// <param name="queryable"></param>
+        /// <param name="context"></param>
+        /// <param name="keyValues"></param>
+        /// <returns></returns>
         public static Task<bool> AnyByPrimaryKeyAsync<TEntity>(this IQueryable<TEntity> queryable, DbContext context, params object[] keyValues)
             where TEntity : class
             => queryable.AnyAsync(BuildCheck<TEntity>(context, keyValues));
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <typeparam name="TEntity">Type of the entity.</typeparam>
+        /// <param name="queryable"></param>
+        /// <param name="context"></param>
+        /// <param name="keyValues"></param>
+        /// <param name="cancellationToken">A <see cref="CancellationToken"/> to observe while waiting for the task to complete.</param>
+        /// <returns></returns>
         public static Task<bool> AnyByPrimaryKeyAsync<TEntity>(this IQueryable<TEntity> queryable, DbContext context, object[] keyValues,
             CancellationToken cancellationToken)
             where TEntity : class
@@ -82,20 +176,20 @@ namespace Microsoft.EntityFrameworkCore
         #region GetByPrimaryKey
 
         /// <summary>
-        /// Return the entity with given primary key as no tracking.
+        /// Return the entity with given primary key as no tracking or a default value if it doesn't exist.
         /// </summary>
-        /// <typeparam name="TEntity"></typeparam>
-        /// <param name="context"></param>
-        /// <param name="keyValues"></param>
-        /// <returns></returns>
+        /// <typeparam name="TEntity">Type of the entity.</typeparam>
+        /// <param name="context">Database.</param>
+        /// <param name="keyValues">Primary key.</param>
+        /// <returns>An entity or a default value.</returns>
         public static TEntity GetByPrimaryKey<TEntity>(this DbContext context, params object[] keyValues)
             where TEntity : class
             => context.Set<TEntity>().AsNoTracking().GetByPrimaryKey(context, keyValues);
 
         /// <summary>
-        /// Return the entity with given primary key as no tracking.
+        /// Asynchronously returns the entity with given primary key as no tracking or a default value if it doesn't exist.
         /// </summary>
-        /// <typeparam name="TEntity"></typeparam>
+        /// <typeparam name="TEntity">Type of the entity.</typeparam>
         /// <param name="context"></param>
         /// <param name="keyValues"></param>
         /// <returns></returns>
@@ -104,26 +198,51 @@ namespace Microsoft.EntityFrameworkCore
             => context.Set<TEntity>().AsNoTracking().GetByPrimaryKeyAsync(context, keyValues);
 
         /// <summary>
-        /// Return the entity with given primary key as no tracking.
+        /// Asynchronously returns the entity with given primary key as no tracking or a default value if it doesn't exist.
         /// </summary>
-        /// <typeparam name="TEntity"></typeparam>
+        /// <typeparam name="TEntity">Type of the entity.</typeparam>
         /// <param name="context"></param>
         /// <param name="keyValues"></param>
-        /// <param name="cancellationToken"></param>
+        /// <param name="cancellationToken">A <see cref="CancellationToken"/> to observe while waiting for the task to complete.</param>
         /// <returns></returns>
         public static Task<TEntity> GetByPrimaryKeyAsync<TEntity>(this DbContext context, object[] keyValues, CancellationToken cancellationToken)
             where TEntity : class
             => context.Set<TEntity>().AsNoTracking().GetByPrimaryKeyAsync(context, keyValues, cancellationToken);
 
+        /// <summary>
+        /// Returns an entity with given primary key or a default value if it doesn't exist.
+        /// </summary>
+        /// <typeparam name="TEntity">Type of the entity.</typeparam>
+        /// <param name="queryable"></param>
+        /// <param name="context"></param>
+        /// <param name="keyValues"></param>
+        /// <returns></returns>
         public static TEntity GetByPrimaryKey<TEntity>(this IQueryable<TEntity> queryable, DbContext context, params object[] keyValues)
             where TEntity : class
             => queryable.SingleOrDefault(BuildCheck<TEntity>(context, keyValues));
 
+        /// <summary>
+        /// Asynchronously returns an entity with given primary key or a default value if it doesn't exist.
+        /// </summary>
+        /// <typeparam name="TEntity">Type of the entity.</typeparam>
+        /// <param name="queryable"></param>
+        /// <param name="context"></param>
+        /// <param name="keyValues"></param>
+        /// <returns></returns>
         public static Task<TEntity> GetByPrimaryKeyAsync<TEntity>(this IQueryable<TEntity> queryable, DbContext context,
             params object[] keyValues)
             where TEntity : class
             => queryable.SingleOrDefaultAsync(BuildCheck<TEntity>(context, keyValues));
 
+        /// <summary>
+        /// Asynchronously returns an entity with given primary key or a default value if it doesn't exist.
+        /// </summary>
+        /// <typeparam name="TEntity">Type of the entity.</typeparam>
+        /// <param name="queryable"></param>
+        /// <param name="context"></param>
+        /// <param name="keyValues"></param>
+        /// <param name="cancellationToken">A <see cref="CancellationToken"/> to observe while waiting for the task to complete.</param>
+        /// <returns></returns>
         public static Task<TEntity> GetByPrimaryKeyAsync<TEntity>(this IQueryable<TEntity> queryable, DbContext context, object[] keyValues,
             CancellationToken cancellationToken)
             where TEntity : class
@@ -132,12 +251,14 @@ namespace Microsoft.EntityFrameworkCore
         #endregion GetByPrimaryKey
 
         /// <summary>
-        /// Converts values from string to clr.
+        /// Converts values of a primary key from string[] to clr types and returns them as an object array.
         /// </summary>
-        /// <typeparam name="TEntity"></typeparam>
-        /// <param name="context"></param>
-        /// <param name="stringKeyValues"></param>
-        /// <returns></returns>
+        /// <typeparam name="TEntity">Type of the entity.</typeparam>
+        /// <param name="context">Database.</param>
+        /// <param name="stringKeyValues">Primary key.</param>
+        /// <returns>Primary key as an object array.</returns>
+        /// <exception cref="ArgumentException"><paramref name="stringKeyValues"/> is null or amount of values doesn't match to amount defined in a
+        /// primary key</exception>
         public static object[] GetKeyValues<TEntity>(this DbContext context, string[] stringKeyValues)
         {
             if (stringKeyValues == null || stringKeyValues.Length == 0) { throw new ArgumentException(nameof(stringKeyValues)); }
