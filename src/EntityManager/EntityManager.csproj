@@ -3,7 +3,7 @@
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
     <LangVersion>latest</LangVersion>
-    <Version>1.0.0</Version>
+    <Version>1.0.1-beta0</Version>
     <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
     <PackageProjectUrl>https://github.com/Spaier/EntityManager</PackageProjectUrl>
     <PackageLicenseUrl>https://github.com/Spaier/EntityManager/blob/master/LICENSE</PackageLicenseUrl>
@@ -12,6 +12,7 @@
     <Authors>Pavel Levchuk</Authors>
     <Copyright>Copyright (c) 2017 Pavel Levchuk</Copyright>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <Description>Contains base models for an ef core and asp.net identity based application.</Description>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
