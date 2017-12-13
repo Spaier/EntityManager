@@ -36,7 +36,7 @@ namespace EntityManager.AspNetCore
         /// </summary>
         /// <param name="keyValues"></param>
         /// <returns></returns>
-        protected async Task<IActionResult> GetEntityInner(object[] keyValues)
+        private protected async Task<IActionResult> GetEntityInner(object[] keyValues)
         {
             var entity = await GetOneEntity(keyValues);
             if (entity == null) { return NotFound(); }
@@ -48,7 +48,7 @@ namespace EntityManager.AspNetCore
         /// </summary>
         /// <param name="keyValues"></param>
         /// <returns></returns>
-        protected Task<IActionResult> GetEntityByKey(string[] keyValues)
+        private protected Task<IActionResult> GetEntityByKey(string[] keyValues)
         {
             var key = _context.GetKeyValues<TEntity>(keyValues);
             return GetEntityInner(key);
@@ -59,7 +59,7 @@ namespace EntityManager.AspNetCore
         /// </summary>
         /// <param name="entity"></param>
         /// <returns></returns>
-        protected async Task<IActionResult> PostEntityInner(TEntity entity)
+        private protected async Task<IActionResult> PostEntityInner(TEntity entity)
         {
             await _context.AddAsync(entity);
             await _context.SaveChangesAsync();
@@ -71,7 +71,7 @@ namespace EntityManager.AspNetCore
         /// </summary>
         /// <param name="entity"></param>
         /// <returns></returns>
-        protected async Task<IActionResult> PutEntityInner(TEntity entity)
+        private protected async Task<IActionResult> PutEntityInner(TEntity entity)
         {
             if (await _context.AnyByEntityAsync(entity))
             {
@@ -88,7 +88,7 @@ namespace EntityManager.AspNetCore
         /// </summary>
         /// <param name="keyValues">Primary key of the entity.</param>
         /// <returns></returns>
-        protected async Task<IActionResult> DeleteEntityInner(object[] keyValues)
+        private protected async Task<IActionResult> DeleteEntityInner(object[] keyValues)
         {
             var entity = await _context.FindAsync<TEntity>(keyValues);
             if (entity == null) { return NotFound(); }
@@ -103,7 +103,7 @@ namespace EntityManager.AspNetCore
         /// </summary>
         /// <param name="keyValues"></param>
         /// <returns></returns>
-        protected Task<IActionResult> DeleteEntityByKey(string[] keyValues)
+        private protected Task<IActionResult> DeleteEntityByKey(string[] keyValues)
         {
             var key = _context.GetKeyValues<TEntity>(keyValues);
             return DeleteEntityInner(key);
@@ -116,7 +116,7 @@ namespace EntityManager.AspNetCore
         protected virtual Task<List<TEntity>> GetAllEntities() => _context.Set<TEntity>().AsNoTracking().ToListAsync();
 
         /// <summary>
-        /// Returns <see cref="OkObjectResult"/> if entity with given primary key exists otherwise <see cref="NotFoundResult"></see>.
+        /// Returns entity with given primary key if it exists otherwise null.
         /// </summary>
         /// <param name="keyValues"></param>
         /// <returns></returns>

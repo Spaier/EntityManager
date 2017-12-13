@@ -33,7 +33,7 @@ namespace EntityManager.AspNetCore
         }
 
         /// <summary>
-        /// 
+        /// Not supported.
         /// </summary>
         /// <param name="entity"></param>
         /// <returns></returns>
@@ -42,7 +42,7 @@ namespace EntityManager.AspNetCore
         public sealed override Task<IActionResult> PostEntity([FromBody, Required] TEntity entity) => throw new NotSupportedException();
 
         /// <summary>
-        /// 
+        /// Not supported.
         /// </summary>
         /// <param name="entity"></param>
         /// <returns></returns>
@@ -76,7 +76,7 @@ namespace EntityManager.AspNetCore
         /// Convets a viewmodel to an entity, adds it to a database and returns <see cref="NoContentResult"/>.
         /// </summary>
         /// <param name="entityViewModel"></param>
-        protected Task<IActionResult> PostEntityInner(TEntityViewModel entityViewModel)
+        private protected Task<IActionResult> PostEntityInner(TEntityViewModel entityViewModel)
         {
             var entity = _mapper.Map<TEntityViewModel, TEntity>(entityViewModel);
             return PostEntityInner(entity);
@@ -87,7 +87,7 @@ namespace EntityManager.AspNetCore
         /// <see cref="NotFoundResult"/> if it doesn't exist.
         /// </summary>
         /// <param name="entityViewModel"></param>
-        protected Task<IActionResult> PutEntityInner(TEntityViewModel entityViewModel)
+        private protected Task<IActionResult> PutEntityInner(TEntityViewModel entityViewModel)
         {
             var entity = _mapper.Map<TEntityViewModel, TEntity>(entityViewModel);
             return PutEntityInner(entity);
