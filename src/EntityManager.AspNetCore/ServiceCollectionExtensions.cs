@@ -1,7 +1,6 @@
-﻿using EntityManager.AspNetCore.Identity;
-using EntityManager.Identity;
+﻿using EntityManager;
+using EntityManager.AspNetCore.Identity;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Identity;
 using System;
 
 namespace Microsoft.Extensions.DependencyInjection
