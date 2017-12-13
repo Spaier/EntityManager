@@ -39,7 +39,7 @@ namespace EntityManager.AspNetCore
         /// <returns></returns>
         /// <exception cref="NotSupportedException"></exception>
         [NonAction]
-        public override Task<IActionResult> PostEntity([FromBody, Required] TEntity entity) => throw new NotSupportedException();
+        public sealed override Task<IActionResult> PostEntity([FromBody, Required] TEntity entity) => throw new NotSupportedException();
 
         /// <summary>
         /// 
@@ -47,7 +47,7 @@ namespace EntityManager.AspNetCore
         /// <param name="entity"></param>
         /// <returns></returns>
         [NonAction]
-        public override Task<IActionResult> PutEntity([FromBody, Required] TEntity entity) => throw new NotSupportedException();
+        public sealed override Task<IActionResult> PutEntity([FromBody, Required] TEntity entity) => throw new NotSupportedException();
 
         /// <summary>
         /// Convets a viewmodel to an entity and adds it to a database and returns 204.
@@ -57,7 +57,7 @@ namespace EntityManager.AspNetCore
         /// <response code="204">Success.</response>
         [ProducesResponseType(204)]
         [HttpPost]
-        public Task<IActionResult> PostEntity([FromBody, Required] TEntityViewModel entityViewModel) => PostEntityInner(entityViewModel);
+        public virtual Task<IActionResult> PostEntity([FromBody, Required] TEntityViewModel entityViewModel) => PostEntityInner(entityViewModel);
 
         /// <summary>
         /// Convets a viewmodel to an entity, updates it and returns 204 or
@@ -70,7 +70,7 @@ namespace EntityManager.AspNetCore
         [ProducesResponseType(204)]
         [ProducesResponseType(404)]
         [HttpPut]
-        public Task<IActionResult> PutEntity([FromBody, Required] TEntityViewModel entityViewModel) => PutEntityInner(entityViewModel);
+        public virtual Task<IActionResult> PutEntity([FromBody, Required] TEntityViewModel entityViewModel) => PutEntityInner(entityViewModel);
 
         /// <summary>
         /// Convets a viewmodel to an entity, adds it to a database and returns <see cref="NoContentResult"/>.
