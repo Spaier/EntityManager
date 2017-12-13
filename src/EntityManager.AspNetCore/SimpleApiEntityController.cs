@@ -25,7 +25,7 @@ namespace EntityManager.AspNetCore
         public SimpleApiEntityController(TDbContext context) : base(context) { }
 
         /// <summary>
-        /// Returns all entities.
+        /// Returns 200 and all entities.
         /// </summary>
         /// <returns></returns>
         /// <response code="200"></response>
@@ -34,7 +34,7 @@ namespace EntityManager.AspNetCore
         public virtual Task<List<TEntity>> GetEntities() => GetAllEntities();
 
         /// <summary>
-        /// Returns entity with given primary key if it exists otherwise 404.
+        /// Returns 200 and entity with given primary key if it exists otherwise 404.
         /// </summary>
         /// <param name="keyValues"></param>
         /// <returns></returns>
