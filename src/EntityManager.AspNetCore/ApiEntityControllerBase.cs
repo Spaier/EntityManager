@@ -110,13 +110,13 @@ namespace EntityManager.AspNetCore
         }
 
         /// <summary>
-        /// Returns all entities.
+        /// Returns all entities. Override this to add includes/orderby/etc.
         /// </summary>
         /// <returns></returns>
         protected virtual Task<List<TEntity>> GetAllEntities() => _context.Set<TEntity>().AsNoTracking().ToListAsync();
 
         /// <summary>
-        /// Returns entity with given primary key if it exists otherwise null.
+        /// Returns entity with given primary key if it exists otherwise null. Override this to add includes/orderby/etc.
         /// </summary>
         /// <param name="keyValues"></param>
         /// <returns></returns>
@@ -124,7 +124,7 @@ namespace EntityManager.AspNetCore
             => await _context.GetByPrimaryKeyAsync<TEntity>(keyValues);
 
         /// <summary>
-        /// Updates an entity.
+        /// Updates an entity. Override this to update join entities.
         /// </summary>
         /// <param name="entity"></param>
         protected virtual void UpdateEntity(TEntity entity)
