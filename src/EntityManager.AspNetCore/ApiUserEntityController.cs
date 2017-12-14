@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace EntityManager.AspNetCore
 {
-    public class ApiUserEntityController<TDbContext, TUserManager, TRole, TUserEntity, TUser, TUserKey, TUserEntityViewModel>
+    public class ApiUserEntityController<TDbContext, TUserEntity, TUserEntityViewModel, TUserManager, TUser, TUserKey, TRole>
         : ApiAuthEntityController<TDbContext, TUserEntity, TUserEntityViewModel>
         where TUserEntity : class, IUserEntity<TUser, TUserKey>
         where TUser : IdentityUser<TUserKey>
@@ -45,5 +45,28 @@ namespace EntityManager.AspNetCore
             entity.UserId = (await GetUser()).Id;
             return entity;
         }
+    }
+
+    public class ApiUserEntityController<TDbContext, TUserEntity, TUserEntityViewModel, TUserManager, TUser, TUserKey>
+        : ApiUserEntityController<TDbContext, TUserEntity, TUserEntityViewModel, TUserManager, TUser, TUserKey, IdentityRole<TUserKey>>
+        where TUserEntity : class, IUserEntity<TUser, TUserKey>
+        where TUser : IdentityUser<TUserKey>
+        where TUserKey : IEquatable<TUserKey>
+        where TUserManager : UserManager<TUser>
+        where TDbContext : IdentityDbContext<TUser, IdentityRole<TUserKey>, TUserKey>
+    {
+        public ApiUserEntityController(TDbContext context, TUserManager userManager, IMapper mapper, IAuthorizationService authorizationService)
+            : base(context, userManager, mapper, authorizationService) { }
+    }
+
+    public class ApiUserEntityController<TDbContext, TUserEntity, TUserEntityViewModel, TUser, TUserKey>
+        : ApiUserEntityController<TDbContext, TUserEntity, TUserEntityViewModel, UserManager<TUser>, TUser, TUserKey, IdentityRole<TUserKey>>
+        where TUserEntity : class, IUserEntity<TUser, TUserKey>
+        where TUser : IdentityUser<TUserKey>
+        where TUserKey : IEquatable<TUserKey>
+        where TDbContext : IdentityDbContext<TUser, IdentityRole<TUserKey>, TUserKey>
+    {
+        public ApiUserEntityController(TDbContext context, UserManager<TUser> userManager, IMapper mapper, IAuthorizationService authorizationService)
+            : base(context, userManager, mapper, authorizationService) { }
     }
 }
