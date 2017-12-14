@@ -10,12 +10,12 @@ using System.Threading.Tasks;
 namespace EntityManager.AspNetCore
 {
     /// <summary>
-    /// 
+    /// A base class for an API Controller managing entity with api/[controller] route and overposting protection.
     /// </summary>
     /// <typeparam name="TDbContext"></typeparam>
     /// <typeparam name="TEntity"></typeparam>
     /// <typeparam name="TEntityViewModel"></typeparam>
-    public abstract class ApiMappedEntityControllerBase<TDbContext, TEntity, TEntityViewModel> : SimpleApiEntityController<TDbContext, TEntity>
+    public abstract class ApiMappedEntityController<TDbContext, TEntity, TEntityViewModel> : SimpleApiEntityController<TDbContext, TEntity>
         where TDbContext : DbContext
         where TEntity : class
     {
@@ -27,7 +27,7 @@ namespace EntityManager.AspNetCore
         /// <param name="context"></param>
         /// <param name="mapper"></param>
         /// <exception cref="ArgumentNullException"></exception>
-        public ApiMappedEntityControllerBase(TDbContext context, IMapper mapper) : base(context)
+        public ApiMappedEntityController(TDbContext context, IMapper mapper) : base(context)
         {
             _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
         }

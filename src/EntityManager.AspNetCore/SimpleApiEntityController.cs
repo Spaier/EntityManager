@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 namespace EntityManager.AspNetCore
 {
     /// <summary>
-    /// A base class for an API Controller managing entity with api/[controller] route. It has no overpost protection.
+    /// A base class for an API Controller managing entity with api/[controller] route. It has no overposting protection.
     /// </summary>
     /// <typeparam name="TDbContext"></typeparam>
     /// <typeparam name="TEntity"></typeparam>
