@@ -24,7 +24,7 @@ namespace Microsoft.EntityFrameworkCore
         #region AnyByEntity
 
         /// <summary>
-        /// 
+        /// Determines whether an entity with the primary key of an <paramref name="entity"/> exists in a database.
         /// </summary>
         /// <typeparam name="TEntity">Type of the entity.</typeparam>
         /// <param name="context"></param>
@@ -35,7 +35,7 @@ namespace Microsoft.EntityFrameworkCore
             => context.Set<TEntity>().AsNoTracking().AnyByEntity(context, entity);
 
         /// <summary>
-        /// 
+        /// Asynchronously determines whether an entity with the primary key of an <paramref name="entity"/> exists in a database.
         /// </summary>
         /// <typeparam name="TEntity">Type of the entity.</typeparam>
         /// <param name="context"></param>
@@ -46,19 +46,19 @@ namespace Microsoft.EntityFrameworkCore
             => context.Set<TEntity>().AsNoTracking().AnyByEntityAsync(context, entity);
 
         /// <summary>
-        /// 
+        /// Asynchronously determines whether an entity with the primary key of an <paramref name="entity"/> exists in a database.
         /// </summary>
         /// <typeparam name="TEntity">Type of the entity.</typeparam>
         /// <param name="context"></param>
         /// <param name="entity"></param>
         /// <param name="cancellationToken">A <see cref="CancellationToken"/> to observe while waiting for the task to complete.</param>
         /// <returns></returns>
-        public static Task<bool> AnyAsyncByEntity<TEntity>(this DbContext context, TEntity entity, CancellationToken cancellationToken)
+        public static Task<bool> AnyByEntityAsync<TEntity>(this DbContext context, TEntity entity, CancellationToken cancellationToken)
             where TEntity : class
             => context.Set<TEntity>().AsNoTracking().AnyByEntityAsync(context, entity, cancellationToken);
 
         /// <summary>
-        /// 
+        /// Determines whether an entity with the primary key of an <paramref name="entity"/> exists in a database.
         /// </summary>
         /// <typeparam name="TEntity">Type of the entity.</typeparam>
         /// <param name="queryable"></param>
@@ -70,7 +70,7 @@ namespace Microsoft.EntityFrameworkCore
             => queryable.Any(BuildCheck(context, entity));
 
         /// <summary>
-        /// 
+        /// Asynchronously determines whether an entity with the primary key of an <paramref name="entity"/> exists in a database.
         /// </summary>
         /// <typeparam name="TEntity">Type of the entity.</typeparam>
         /// <param name="queryable"></param>
