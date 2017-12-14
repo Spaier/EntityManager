@@ -31,7 +31,7 @@ namespace EntityManager.AspNetCore
         /// <response code="200"></response>
         [HttpGet]
         [ProducesResponseType(200)]
-        public virtual Task<List<TEntity>> GetEntities() => GetAllEntities();
+        public virtual async Task<IActionResult> GetEntities() => Ok(await GetAllEntities());
 
         /// <summary>
         /// Returns 200 and entity with given primary key if it exists otherwise 404.
@@ -43,7 +43,12 @@ namespace EntityManager.AspNetCore
         [HttpGet("{keyValues}")]
         [ProducesResponseType(200)]
         [ProducesResponseType(404)]
-        public virtual Task<IActionResult> GetEntity(string[] keyValues) => GetEntityByKey(keyValues);
+        public virtual async Task<IActionResult> GetEntity(string[] keyValues)
+        {
+            var key = _context.GetKeyValues<TEntity>(keyValues);
+            var entity = await GetOneEntity(keyValues);
+            return await GetEntityActionResult(entity);
+        }
 
         /// <summary>
         /// Adds an entity and returns 204.
@@ -78,6 +83,11 @@ namespace EntityManager.AspNetCore
         [HttpDelete("{keyValues}")]
         [ProducesResponseType(204)]
         [ProducesResponseType(404)]
-        public virtual Task<IActionResult> DeleteEntity(string[] keyValues) => DeleteEntityByKey(keyValues);
+        public virtual async Task<IActionResult> DeleteEntity(string[] keyValues)
+        {
+            var key = _context.GetKeyValues<TEntity>(keyValues);
+            var entity = await _context.FindAsync<TEntity>(key);
+            return await DeleteEntityInner(entity);
+        }
     }
 }

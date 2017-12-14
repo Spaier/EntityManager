@@ -57,7 +57,11 @@ namespace EntityManager.AspNetCore
         /// <response code="204">Success.</response>
         [ProducesResponseType(204)]
         [HttpPost]
-        public virtual Task<IActionResult> PostEntity([FromBody, Required] TEntityViewModel entityViewModel) => PostEntityInner(entityViewModel);
+        public virtual async Task<IActionResult> PostEntity([FromBody, Required] TEntityViewModel entityViewModel)
+        {
+            var entity = await MapEntity(entityViewModel);
+            return await PostEntityInner(entity);
+        }
 
         /// <summary>
         /// Convets a viewmodel to an entity, updates it and returns 204 or
@@ -70,27 +74,18 @@ namespace EntityManager.AspNetCore
         [ProducesResponseType(204)]
         [ProducesResponseType(404)]
         [HttpPut]
-        public virtual Task<IActionResult> PutEntity([FromBody, Required] TEntityViewModel entityViewModel) => PutEntityInner(entityViewModel);
-
-        /// <summary>
-        /// Convets a viewmodel to an entity, adds it to a database and returns <see cref="NoContentResult"/>.
-        /// </summary>
-        /// <param name="entityViewModel"></param>
-        private protected Task<IActionResult> PostEntityInner(TEntityViewModel entityViewModel)
+        public virtual async Task<IActionResult> PutEntity([FromBody, Required] TEntityViewModel entityViewModel)
         {
-            var entity = _mapper.Map<TEntityViewModel, TEntity>(entityViewModel);
-            return PostEntityInner(entity);
+            var entity = await MapEntity(entityViewModel);
+            return await PutEntityInner(entity);
         }
 
         /// <summary>
-        /// Convets a viewmodel to an entity, updates it and returns <see cref="NoContentResult"/> or
-        /// <see cref="NotFoundResult"/> if it doesn't exist.
+        /// Convets a viewmodel to an entity.
         /// </summary>
-        /// <param name="entityViewModel"></param>
-        private protected Task<IActionResult> PutEntityInner(TEntityViewModel entityViewModel)
-        {
-            var entity = _mapper.Map<TEntityViewModel, TEntity>(entityViewModel);
-            return PutEntityInner(entity);
-        }
+        /// <param name="entityViewModel">ViewModel to convert.</param>
+        /// <returns>Entity.</returns>
+        private protected virtual Task<TEntity> MapEntity(TEntityViewModel entityViewModel)
+            => Task.FromResult(_mapper.Map<TEntityViewModel, TEntity>(entityViewModel));
     }
 }

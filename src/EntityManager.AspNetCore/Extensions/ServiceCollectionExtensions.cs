@@ -33,18 +33,10 @@ namespace Microsoft.Extensions.DependencyInjection
         /// </summary>
         /// <typeparam name="TEntity"></typeparam>
         /// <param name="serviceCollection"></param>
-        public static void AddAdminAuthHandler<TEntity>(this IServiceCollection serviceCollection)
+        /// <param name="role"></param>
+        public static void AddAdminAuthHandler<TEntity>(this IServiceCollection serviceCollection, string role)
         {
-            serviceCollection.AddScoped<IAuthorizationHandler>(w => new AdminAuthorizationHandler<TEntity>(""));
-        }
-
-        /// <summary>
-        /// Adds admin auth handler for any type.
-        /// </summary>
-        /// <param name="serviceCollection"></param>
-        public static void AddAdminAuthHandler(this IServiceCollection serviceCollection)
-        {
-            serviceCollection.AddScoped(typeof(IAuthorizationHandler), typeof(AdminAuthorizationHandler<>));
+            serviceCollection.AddScoped<IAuthorizationHandler>(w => new AdminAuthorizationHandler<TEntity>(role));
         }
     }
 }

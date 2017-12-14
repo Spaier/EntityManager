@@ -32,84 +32,6 @@ namespace EntityManager.AspNetCore
         }
 
         /// <summary>
-        /// Returns <see cref="OkObjectResult"/> if entity with given primary key exists otherwise <see cref="NotFoundResult"></see>.
-        /// </summary>
-        /// <param name="keyValues"></param>
-        /// <returns></returns>
-        private protected async Task<IActionResult> GetEntityInner(object[] keyValues)
-        {
-            var entity = await GetOneEntity(keyValues);
-            if (entity == null) { return NotFound(); }
-            return Ok(entity);
-        }
-
-        /// <summary>
-        /// Returns <see cref="OkObjectResult"/> if entity with given primary key exists otherwise <see cref="NotFoundResult"></see>.
-        /// </summary>
-        /// <param name="keyValues"></param>
-        /// <returns></returns>
-        private protected Task<IActionResult> GetEntityByKey(string[] keyValues)
-        {
-            var key = _context.GetKeyValues<TEntity>(keyValues);
-            return GetEntityInner(key);
-        }
-
-        /// <summary>
-        /// Adds an entity to a database and returns <see cref="NoContentResult"/>.
-        /// </summary>
-        /// <param name="entity"></param>
-        /// <returns></returns>
-        private protected async Task<IActionResult> PostEntityInner(TEntity entity)
-        {
-            await _context.AddAsync(entity);
-            await _context.SaveChangesAsync();
-            return NoContent();
-        }
-
-        /// <summary>
-        /// Updates an entity and returns <see cref="NoContentResult"/>. If it doesn't exist - <see cref="NotFoundResult"/>.
-        /// </summary>
-        /// <param name="entity"></param>
-        /// <returns></returns>
-        private protected async Task<IActionResult> PutEntityInner(TEntity entity)
-        {
-            if (await _context.AnyByEntityAsync(entity))
-            {
-                UpdateEntity(entity);
-                await _context.SaveChangesAsync();
-                return NoContent();
-            }
-            return NotFound();
-        }
-
-        /// <summary>
-        /// Deletes an entity by primary key and returns <see cref="NoContentResult"/> or <see cref="NotFoundResult"/> if no entity with
-        /// given primary key exists.
-        /// </summary>
-        /// <param name="keyValues">Primary key of the entity.</param>
-        /// <returns></returns>
-        private protected async Task<IActionResult> DeleteEntityInner(object[] keyValues)
-        {
-            var entity = await _context.FindAsync<TEntity>(keyValues);
-            if (entity == null) { return NotFound(); }
-            _context.Remove(entity);
-            await _context.SaveChangesAsync();
-            return NoContent();
-        }
-
-        /// <summary>
-        /// Deletes an entity by primary key and returns <see cref="NoContentResult"/> or <see cref="NotFoundResult"/> if no entity with
-        /// given primary key exists.
-        /// </summary>
-        /// <param name="keyValues"></param>
-        /// <returns></returns>
-        private protected Task<IActionResult> DeleteEntityByKey(string[] keyValues)
-        {
-            var key = _context.GetKeyValues<TEntity>(keyValues);
-            return DeleteEntityInner(key);
-        }
-
-        /// <summary>
         /// Returns all entities. Override this to add includes/orderby/etc.
         /// </summary>
         /// <returns></returns>
@@ -127,9 +49,63 @@ namespace EntityManager.AspNetCore
         /// Updates an entity. Override this to update join entities.
         /// </summary>
         /// <param name="entity"></param>
-        protected virtual void UpdateEntity(TEntity entity)
+        protected virtual Task UpdateEntity(TEntity entity)
         {
             _context.Update(entity);
+            return Task.CompletedTask;
+        }
+
+        /// <summary>
+        /// Returns <see cref="OkObjectResult"/> if entity with given primary key exists otherwise <see cref="NotFoundResult"></see>.
+        /// </summary>
+        /// <param name="entity"></param>
+        /// <returns></returns>
+        private protected virtual Task<IActionResult> GetEntityActionResult(TEntity entity)
+        {
+            if (entity == null) { return Task.FromResult((IActionResult)NotFound()); }
+            return Task.FromResult((IActionResult)Ok(entity));
+        }
+
+        /// <summary>
+        /// Adds an entity to a database and returns <see cref="NoContentResult"/>.
+        /// </summary>
+        /// <param name="entity"></param>
+        /// <returns></returns>
+        private protected virtual async Task<IActionResult> PostEntityInner(TEntity entity)
+        {
+            await _context.AddAsync(entity);
+            await _context.SaveChangesAsync();
+            return NoContent();
+        }
+
+        /// <summary>
+        /// Updates an entity and returns <see cref="NoContentResult"/>. If it doesn't exist - <see cref="NotFoundResult"/>.
+        /// </summary>
+        /// <param name="entity"></param>
+        /// <returns></returns>
+        private protected virtual async Task<IActionResult> PutEntityInner(TEntity entity)
+        {
+            if (await _context.AnyByEntityAsync(entity))
+            {
+                await UpdateEntity(entity);
+                await _context.SaveChangesAsync();
+                return NoContent();
+            }
+            return NotFound();
+        }
+
+        /// <summary>
+        /// Deletes an entity by primary key and returns <see cref="NoContentResult"/> or <see cref="NotFoundResult"/> if no entity with
+        /// given primary key exists.
+        /// </summary>
+        /// <param name="entity">Entity to delete.</param>
+        /// <returns></returns>
+        private protected virtual async Task<IActionResult> DeleteEntityInner(TEntity entity)
+        {
+            if (entity == null) { return NotFound(); }
+            _context.Remove(entity);
+            await _context.SaveChangesAsync();
+            return NoContent();
         }
     }
 }
