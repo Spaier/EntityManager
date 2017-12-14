@@ -100,7 +100,7 @@ namespace Microsoft.EntityFrameworkCore
         #region AnyByPrimaryKey
 
         /// <summary>
-        /// 
+        /// Determines whether an entity with the given primary key exists in a database.
         /// </summary>
         /// <typeparam name="TEntity">Type of the entity.</typeparam>
         /// <param name="context"></param>
@@ -111,7 +111,7 @@ namespace Microsoft.EntityFrameworkCore
             => context.Set<TEntity>().AsNoTracking().AnyByPrimaryKey(context, keyValues);
 
         /// <summary>
-        /// 
+        /// Asynchronously determines whether an entity with the given primary key exists in a database.
         /// </summary>
         /// <typeparam name="TEntity">Type of the entity.</typeparam>
         /// <param name="context"></param>
@@ -122,7 +122,7 @@ namespace Microsoft.EntityFrameworkCore
             => context.Set<TEntity>().AsNoTracking().AnyByPrimaryKeyAsync(context, keyValues);
 
         /// <summary>
-        /// 
+        /// Asynchronously determines whether an entity with the given primary key exists in a database.
         /// </summary>
         /// <typeparam name="TEntity">Type of the entity.</typeparam>
         /// <param name="context"></param>
@@ -134,7 +134,7 @@ namespace Microsoft.EntityFrameworkCore
             => context.Set<TEntity>().AsNoTracking().AnyByPrimaryKeyAsync(context, keyValues, cancellationToken);
 
         /// <summary>
-        /// 
+        /// Determines whether an entity with the given primary key exists in a database.
         /// </summary>
         /// <typeparam name="TEntity">Type of the entity.</typeparam>
         /// <param name="queryable"></param>
@@ -146,7 +146,7 @@ namespace Microsoft.EntityFrameworkCore
             => queryable.Any(BuildCheck<TEntity>(context, keyValues));
 
         /// <summary>
-        /// 
+        /// Asynchronously determines whether an entity with the given primary key exists in a database.
         /// </summary>
         /// <typeparam name="TEntity">Type of the entity.</typeparam>
         /// <param name="queryable"></param>
@@ -158,7 +158,7 @@ namespace Microsoft.EntityFrameworkCore
             => queryable.AnyAsync(BuildCheck<TEntity>(context, keyValues));
 
         /// <summary>
-        /// 
+        /// Asynchronously determines whether an entity with the given primary key exists in a database.
         /// </summary>
         /// <typeparam name="TEntity">Type of the entity.</typeparam>
         /// <param name="queryable"></param>
