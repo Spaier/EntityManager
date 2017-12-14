@@ -5,7 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
-namespace EntityManager.AspNetCore.Identity
+namespace EntityManager.AspNetCore.Authorization
 {
     /// <summary>
     /// Authorization handler that decides whether user can CRUD an entity or entities.

@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace EntityManager.AspNetCore
+namespace EntityManager.AspNetCore.Authorization
 {
     /// <summary>
     /// Allows specified role to ignore auth handlers.

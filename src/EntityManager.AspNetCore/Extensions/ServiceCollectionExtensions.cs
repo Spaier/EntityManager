@@ -1,6 +1,5 @@
 ﻿using EntityManager;
-using EntityManager.AspNetCore;
-using EntityManager.AspNetCore.Identity;
+using EntityManager.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using System;
