@@ -11,6 +11,7 @@ using System.Threading.Tasks;
 
 namespace EntityManager.AspNetCore
 {
+    [Authorize]
     public class ApiUserEntityController<TDbContext, TUserEntity, TUserEntityViewModel, TUserManager, TUser, TUserKey, TRole>
         : ApiAuthEntityController<TDbContext, TUserEntity, TUserEntityViewModel>
         where TUserEntity : class, IUserEntity<TUser, TUserKey>
