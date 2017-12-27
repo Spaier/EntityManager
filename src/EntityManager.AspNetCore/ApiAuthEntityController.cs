@@ -42,7 +42,7 @@ namespace EntityManager.AspNetCore
             {
                 return null;
             }
-            if (User.Identity.IsAuthenticated) { return Forbid(); }
+            if (User?.Identity?.IsAuthenticated == true) { return Forbid(); }
             return Challenge();
         }
     }
