@@ -3,7 +3,7 @@
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
     <LangVersion>latest</LangVersion>
-    <Version>1.0.1-beta2</Version>
+    <Version>1.0.1-beta3</Version>
     <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
     <PackageProjectUrl>https://github.com/Spaier/EntityManager</PackageProjectUrl>
     <PackageLicenseUrl>https://github.com/Spaier/EntityManager/blob/master/LICENSE</PackageLicenseUrl>
