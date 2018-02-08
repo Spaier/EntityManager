@@ -19,7 +19,7 @@ namespace Microsoft.EntityFrameworkCore
         private static readonly MethodInfo _efPropertyMethod = typeof(EF).GetTypeInfo().GetDeclaredMethod(nameof(EF.Property));
 
         private static readonly MethodInfo _valueBufferGetValueMethod = typeof(ValueBuffer).GetRuntimeProperties()
-            .Single(p => p.GetIndexParameters().Any()).GetMethod;
+            .Single(p => p.GetIndexParameters().Length > 0).GetMethod;
 
         #region AnyByEntity
 
@@ -282,7 +282,7 @@ namespace Microsoft.EntityFrameworkCore
         /// <param name="context"></param>
         /// <returns></returns>
         internal static IReadOnlyList<IProperty> GetKeyProperties<TEntity>(this DbContext context)
-            => (context as IDbContextDependencies).Model.FindEntityType(typeof(TEntity)).FindPrimaryKey().Properties;
+            => (context as IDbContextDependencies)?.Model.FindEntityType(typeof(TEntity)).FindPrimaryKey().Properties;
 
         private static Expression<Func<TEntity, bool>> BuildCheck<TEntity>(DbContext context, TEntity entity)
         {
