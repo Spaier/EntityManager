@@ -250,6 +250,8 @@ namespace Microsoft.EntityFrameworkCore
 
         #endregion GetByPrimaryKey
 
+        #region GetKeyValues
+
         /// <summary>
         /// Converts values of a primary key from string[] to clr types and returns them as an object array.
         /// </summary>
@@ -264,25 +266,44 @@ namespace Microsoft.EntityFrameworkCore
             if (stringKeyValues == null || stringKeyValues.Length == 0) { throw new ArgumentException(nameof(stringKeyValues)); }
             var keyProperties = context.GetKeyProperties<TEntity>();
             if (stringKeyValues.Length != keyProperties.Count) { throw new ArgumentException(nameof(stringKeyValues)); }
-            return Enumerable
-                .Range(0, stringKeyValues.Length)
-                .Aggregate(new List<object>(), (list, i) =>
-                {
-                    var keyType = keyProperties[i].ClrType;
-                    var keyValue = Convert.ChangeType(stringKeyValues[i], keyType);
-                    list.Add(keyValue);
-                    return list;
-                }).ToArray();
+            var array = new object[stringKeyValues.Length];
+            for (int i = 0; i < array.Length; i++)
+            {
+                array[i] = Convert.ChangeType(stringKeyValues[i], keyProperties[i].ClrType);
+            }
+            return array;
         }
 
         /// <summary>
-        /// Gets key properties of an entity.
+        /// Returns primary key of an entity as an object array.
         /// </summary>
-        /// <typeparam name="TEntity"></typeparam>
-        /// <param name="context"></param>
-        /// <returns></returns>
-        internal static IReadOnlyList<IProperty> GetKeyProperties<TEntity>(this DbContext context)
+        /// <typeparam name="TEntity">Type of the entity.</typeparam>
+        /// <param name="context">Database.</param>
+        /// <param name="entity">Entity.</param>
+        /// <returns>Primary key as an object array.</returns>
+        public static object[] GetKeyValues<TEntity>(this DbContext context, TEntity entity)
+            => GetKeyValues(entity, context.GetKeyProperties<TEntity>());
+
+        private static object[] GetKeyValues<TEntity>(TEntity entity, IReadOnlyList<IProperty> keyProperties)
+        {
+            var keyValues = new object[keyProperties.Count];
+            for (int i = 0; i < keyValues.Length; i++)
+            {
+                keyValues[i] = entity.GetType().GetProperty(keyProperties[i].PropertyInfo.Name).GetValue(entity);
+            }
+            return keyValues;
+        }
+
+        private static (IReadOnlyList<IProperty>, object[]) GetKeyPropertiesAndValues<TEntity>(DbContext context, TEntity entity)
+        {
+            var keyProperties = context.GetKeyProperties<TEntity>();
+            return (keyProperties, GetKeyValues(entity, keyProperties));
+        }
+
+        private static IReadOnlyList<IProperty> GetKeyProperties<TEntity>(this DbContext context)
             => (context as IDbContextDependencies)?.Model.FindEntityType(typeof(TEntity)).FindPrimaryKey().Properties;
+
+        #endregion
 
         private static Expression<Func<TEntity, bool>> BuildCheck<TEntity>(DbContext context, TEntity entity)
         {
@@ -292,14 +313,6 @@ namespace Microsoft.EntityFrameworkCore
 
         private static Expression<Func<TEntity, bool>> BuildCheck<TEntity>(DbContext context, object[] keyValues) =>
             BuildLambda<TEntity>(GetKeyPropertiesForKeyValues<TEntity>(context, keyValues), new ValueBuffer(keyValues));
-
-        private static (IReadOnlyList<IProperty>, object[]) GetKeyPropertiesAndValues<TEntity>(DbContext context, TEntity entity)
-        {
-            var keyProperties = context.GetKeyProperties<TEntity>();
-            var keyValues = new List<object>();
-            foreach (var property in keyProperties) { keyValues.Add(entity.GetType().GetProperty(property.PropertyInfo.Name).GetValue(entity)); }
-            return (keyProperties, keyValues.ToArray());
-        }
 
         private static IReadOnlyList<IProperty> GetKeyPropertiesForKeyValues<TEntity>(DbContext context, object[] keyValues)
         {
