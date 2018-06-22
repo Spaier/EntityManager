@@ -1,6 +1,6 @@
 language: csharp
 mono: none
-dotnet: latest
+dotnet: 2.1.301
 solution: EntityManager.sln
 script: 
   - dotnet restore
