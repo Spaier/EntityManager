@@ -1,8 +1,9 @@
- # EntityManager.Extensions
+# EntityManager.Extensions
 
-Extensions that allows you to find entity by primary key with AsNoTracking() or Include() query.
+C# class library that contains extension methods that allow you to find entity by primary key with AsNoTracking() or Include() calls in query.
 
-```
+```cs
+
 ...
 public class TodoController : Controller
 {
