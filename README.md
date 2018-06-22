@@ -1,6 +1,6 @@
 # EntityManager.Extensions
 
-[![Build Status](https://travis-ci.org/Spaier/EntityManager.svg?branch=master)](https://travis-ci.org/Spaier/EntityManager)
+[![Build Status](https://travis-ci.com/Spaier/EntityManager.svg?branch=master)](https://travis-ci.com/Spaier/EntityManager)
 [![Nuget](https://img.shields.io/nuget/v/EntityManager.Extensions.svg)](https://www.nuget.org/packages/EntityManager.Extensions)
 
 C# class library that contains extension methods that allow you to find entity by primary key with AsNoTracking() or Include() calls in query.
