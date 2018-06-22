@@ -1,0 +1,7 @@
+language: csharp
+mono: none
+dotnet: latest
+solution: EntityManager.sln
+script: 
+  - dotnet restore
+  - dotnet build
