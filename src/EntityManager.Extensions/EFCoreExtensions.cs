@@ -1,13 +1,13 @@
-﻿using Microsoft.EntityFrameworkCore.Internal;
-using Microsoft.EntityFrameworkCore.Metadata;
-using Microsoft.EntityFrameworkCore.Storage;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore.Internal;
+using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Storage;
 
 namespace Microsoft.EntityFrameworkCore
 {
@@ -303,7 +303,7 @@ namespace Microsoft.EntityFrameworkCore
         private static IReadOnlyList<IProperty> GetKeyProperties<TEntity>(this DbContext context)
             => (context as IDbContextDependencies)?.Model.FindEntityType(typeof(TEntity)).FindPrimaryKey().Properties;
 
-        #endregion
+        #endregion GetKeyValues
 
         private static Expression<Func<TEntity, bool>> BuildCheck<TEntity>(DbContext context, TEntity entity)
         {
