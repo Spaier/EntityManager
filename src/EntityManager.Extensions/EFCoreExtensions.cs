@@ -261,7 +261,7 @@ namespace Microsoft.EntityFrameworkCore
         /// <returns>Primary key as an object array.</returns>
         /// <exception cref="ArgumentException"><paramref name="stringKeyValues"/> is null or amount of values doesn't match to amount defined in a
         /// primary key</exception>
-        public static object[] GetKeyValues<TEntity>(this DbContext context, string[] stringKeyValues)
+        public static object[] GetKeyValues<TEntity>(this DbContext context, params string[] stringKeyValues)
         {
             if (stringKeyValues == null || stringKeyValues.Length == 0) { throw new ArgumentException(nameof(stringKeyValues)); }
             var keyProperties = context.GetKeyProperties<TEntity>();
@@ -284,7 +284,7 @@ namespace Microsoft.EntityFrameworkCore
         public static object[] GetKeyValues<TEntity>(this DbContext context, TEntity entity)
             => GetKeyValues(entity, context.GetKeyProperties<TEntity>());
 
-        private static object[] GetKeyValues<TEntity>(TEntity entity, IReadOnlyList<IProperty> keyProperties)
+        private static object[] GetKeyValues<TEntity>(this TEntity entity, IReadOnlyList<IProperty> keyProperties)
         {
             var keyValues = new object[keyProperties.Count];
             for (int i = 0; i < keyValues.Length; i++)
@@ -294,14 +294,16 @@ namespace Microsoft.EntityFrameworkCore
             return keyValues;
         }
 
-        private static (IReadOnlyList<IProperty>, object[]) GetKeyPropertiesAndValues<TEntity>(DbContext context, TEntity entity)
+        private static (IReadOnlyList<IProperty>, object[]) GetKeyPropertiesAndValues<TEntity>(this DbContext context, TEntity entity)
         {
             var keyProperties = context.GetKeyProperties<TEntity>();
-            return (keyProperties, GetKeyValues(entity, keyProperties));
+            return (keyProperties, entity.GetKeyValues(keyProperties));
         }
 
+#pragma warning disable RCS1202
         private static IReadOnlyList<IProperty> GetKeyProperties<TEntity>(this DbContext context)
-            => (context as IDbContextDependencies)?.Model.FindEntityType(typeof(TEntity)).FindPrimaryKey().Properties;
+            => (context as IDbContextDependencies).Model.FindEntityType(typeof(TEntity)).FindPrimaryKey().Properties;
+#pragma warning restore RCS1202
 
         #endregion GetKeyValues
 
@@ -312,9 +314,9 @@ namespace Microsoft.EntityFrameworkCore
         }
 
         private static Expression<Func<TEntity, bool>> BuildCheck<TEntity>(DbContext context, object[] keyValues) =>
-            BuildLambda<TEntity>(GetKeyPropertiesForKeyValues<TEntity>(context, keyValues), new ValueBuffer(keyValues));
+            BuildLambda<TEntity>(context.GetKeyPropertiesForKeyValues<TEntity>(keyValues), new ValueBuffer(keyValues));
 
-        private static IReadOnlyList<IProperty> GetKeyPropertiesForKeyValues<TEntity>(DbContext context, object[] keyValues)
+        private static IReadOnlyList<IProperty> GetKeyPropertiesForKeyValues<TEntity>(this DbContext context, object[] keyValues)
         {
             var keyProperties = GetKeyProperties<TEntity>(context);
             if (keyProperties.Count != keyValues.Length)
@@ -329,10 +331,9 @@ namespace Microsoft.EntityFrameworkCore
             }
             for (var i = 0; i < keyValues.Length; i++)
             {
-                if (keyValues[i] == null) { throw new ArgumentNullException(nameof(keyValues)); }
                 var valueType = keyValues[i].GetType();
                 var propertyType = keyProperties[i].ClrType;
-                if (valueType != propertyType)
+                if (valueType != propertyType.UnwrapNullableType())
                 {
                     throw new ArgumentException(
                         CoreStrings.FindValueTypeMismatch(
