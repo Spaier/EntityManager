@@ -10,6 +10,8 @@ using Microsoft.EntityFrameworkCore.Internal;
 using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Storage;
 
+[assembly: InternalsVisibleTo("EntityManager.Benchmarks.NetCore")]
+
 namespace Microsoft.EntityFrameworkCore
 {
     /// <summary>
@@ -17,9 +19,9 @@ namespace Microsoft.EntityFrameworkCore
     /// </summary>
     public static class EFCoreExtensions
     {
-        private static readonly MethodInfo _efPropertyMethod = typeof(EF).GetTypeInfo().GetDeclaredMethod(nameof(EF.Property));
+        internal static readonly MethodInfo _efPropertyMethod = typeof(EF).GetTypeInfo().GetDeclaredMethod(nameof(EF.Property));
 
-        private static readonly MethodInfo _valueBufferGetValueMethod = typeof(ValueBuffer).GetRuntimeProperties()
+        internal static readonly MethodInfo _valueBufferGetValueMethod = typeof(ValueBuffer).GetRuntimeProperties()
             .Single(p => p.GetIndexParameters().Length > 0).GetMethod;
 
         #region AnyByEntity
@@ -263,8 +265,6 @@ namespace Microsoft.EntityFrameworkCore
 
         #endregion GetByPrimaryKey
 
-        #region GetKeyValues
-
         /// <summary>
         /// Converts values of a primary key from string[] to clr types and returns them as an object array.
         /// </summary>
@@ -294,57 +294,16 @@ namespace Microsoft.EntityFrameworkCore
         /// <param name="context">Database.</param>
         /// <param name="entity">Entity.</param>
         /// <returns>Primary key as an object array.</returns>
-        public static object[] GetKeyValues<TEntity>(this DbContext context, TEntity entity)
+        public static IEnumerable<object> GetKeyValues<TEntity>(this DbContext context, TEntity entity)
             => GetKeyValues(entity, context.GetKeyProperties<TEntity>());
 
-        private static object[] GetKeyValues<TEntity>(TEntity entity, IReadOnlyList<IProperty> keyProperties)
+        internal static IEnumerable<object> GetKeyValues<TEntity>(this TEntity entity, IReadOnlyList<IProperty> keyProperties)
         {
-            var keyValues = new object[keyProperties.Count];
-            for (int i = 0; i < keyValues.Length; i++)
-            {
-                keyValues[i] = entity.GetType().GetProperty(keyProperties[i].PropertyInfo.Name).GetValue(entity);
-            }
-            return keyValues;
+            return keyProperties
+                .Select(property => entity.GetType().GetProperty(property.PropertyInfo.Name).GetValue(entity));
         }
 
-#pragma warning disable RCS1202
-
-        private static IReadOnlyList<IProperty> GetKeyProperties<TEntity>(this DbContext context)
-            => (context as IDbContextDependencies).Model.FindEntityType(typeof(TEntity)).FindPrimaryKey().Properties;
-
-#pragma warning restore RCS1202
-
-        #endregion GetKeyValues
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private static bool IsKeyContainsNull(object[] keyValues)
-        {
-            return keyValues?.Any(it => it == null) != false;
-        }
-
-        private static bool IsKeyContainsNull<TEntity>(TEntity entity, DbContext context,
-            out IReadOnlyList<IProperty> keyProperties, out object[] keyValues)
-            where TEntity : class
-        {
-            if (entity == null)
-            {
-                keyProperties = null;
-                keyValues = null;
-                return true;
-            }
-            else
-            {
-                return IsKeyContainsNull(keyValues = GetKeyValues(entity, keyProperties = GetKeyProperties<TEntity>(context)));
-            }
-        }
-
-        private static Expression<Func<TEntity, bool>> BuildCheck<TEntity>(DbContext context, object[] keyValues) =>
-            BuildLambda<TEntity>(context.GetKeyPropertiesForKeyValues<TEntity>(keyValues), new ValueBuffer(keyValues));
-
-        private static Expression<Func<TEntity, bool>> BuildCheck<TEntity>(object[] keyValues, IReadOnlyList<IProperty> keyProperties)
-            => BuildLambda<TEntity>(keyProperties, new ValueBuffer(keyValues));
-
-        private static IReadOnlyList<IProperty> GetKeyPropertiesForKeyValues<TEntity>(this DbContext context, object[] keyValues)
+        private static IReadOnlyList<IProperty> CheckKeyProperties<TEntity>(this DbContext context, object[] keyValues)
         {
             var keyProperties = GetKeyProperties<TEntity>(context);
             if (keyProperties.Count != keyValues.Length)
@@ -370,6 +329,43 @@ namespace Microsoft.EntityFrameworkCore
             }
             return keyProperties;
         }
+
+#pragma warning disable RCS1202
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        internal static IReadOnlyList<IProperty> GetKeyProperties<TEntity>(this DbContext context)
+            => (context as IDbContextDependencies).Model.FindEntityType(typeof(TEntity)).FindPrimaryKey().Properties;
+
+#pragma warning restore RCS1202
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private static bool IsKeyContainsNull(IEnumerable<object> keyValues)
+        {
+            return keyValues?.Any(it => it == null) != false;
+        }
+
+        private static bool IsKeyContainsNull<TEntity>(TEntity entity, DbContext context,
+            out IReadOnlyList<IProperty> keyProperties, out IEnumerable<object> keyValues)
+            where TEntity : class
+        {
+            if (entity == null)
+            {
+                keyProperties = null;
+                keyValues = null;
+                return true;
+            }
+            else
+            {
+                return IsKeyContainsNull(keyValues = GetKeyValues(entity, keyProperties = GetKeyProperties<TEntity>(context)));
+            }
+        }
+
+        private static Expression<Func<TEntity, bool>> BuildCheck<TEntity>(this DbContext context, object[] keyValues)
+            => BuildLambda<TEntity>(context.CheckKeyProperties<TEntity>(keyValues), new ValueBuffer(keyValues));
+
+        private static Expression<Func<TEntity, bool>> BuildCheck<TEntity>(this IEnumerable<object> keyValues,
+            IReadOnlyList<IProperty> keyProperties)
+            => BuildLambda<TEntity>(keyProperties, new ValueBuffer(keyValues.ToArray()));
 
         private static Expression<Func<TEntity, bool>> BuildLambda<TEntity>(IReadOnlyList<IProperty> keyProperties, ValueBuffer keyValues)
         {
