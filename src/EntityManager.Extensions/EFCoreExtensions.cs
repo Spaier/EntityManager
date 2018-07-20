@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
+using System.Runtime.CompilerServices;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore.Internal;
@@ -67,7 +68,8 @@ namespace Microsoft.EntityFrameworkCore
         /// <returns></returns>
         public static bool AnyByEntity<TEntity>(this IQueryable<TEntity> queryable, DbContext context, TEntity entity)
             where TEntity : class
-            => queryable.Any(BuildCheck(context, entity));
+            => IsKeyContainsNull(entity, context, out var keyProperties, out var keyValues) ? false
+            : queryable.Any(BuildCheck<TEntity>(keyValues, keyProperties));
 
         /// <summary>
         /// Asynchronously determines whether an entity with the primary key of an <paramref name="entity"/> exists in a database.
@@ -79,7 +81,8 @@ namespace Microsoft.EntityFrameworkCore
         /// <returns></returns>
         public static Task<bool> AnyByEntityAsync<TEntity>(this IQueryable<TEntity> queryable, DbContext context, TEntity entity)
             where TEntity : class
-            => queryable.AnyAsync(BuildCheck(context, entity));
+            => IsKeyContainsNull(entity, context, out var keyProperties, out var keyValues) ? Task.FromResult(false)
+            : queryable.AnyAsync(BuildCheck<TEntity>(keyValues, keyProperties));
 
         /// <summary>
         /// Asynchronously determines whether an entity with the primary key of an <paramref name="entity"/> exists in a database.
@@ -93,7 +96,8 @@ namespace Microsoft.EntityFrameworkCore
         public static Task<bool> AnyByEntityAsync<TEntity>(this IQueryable<TEntity> queryable, DbContext context, TEntity entity,
             CancellationToken cancellationToken)
             where TEntity : class
-            => queryable.AnyAsync(BuildCheck(context, entity), cancellationToken);
+            => IsKeyContainsNull(entity, context, out var keyProperties, out var keyValues) ? Task.FromResult(false)
+            : queryable.AnyAsync(BuildCheck<TEntity>(keyValues, keyProperties), cancellationToken);
 
         #endregion AnyByEntity
 
@@ -144,7 +148,8 @@ namespace Microsoft.EntityFrameworkCore
         /// <returns></returns>
         public static bool AnyByPrimaryKey<TEntity>(this IQueryable<TEntity> queryable, DbContext context, params object[] keyValues)
             where TEntity : class
-            => queryable.Any(BuildCheck<TEntity>(context, keyValues));
+            => IsKeyContainsNull(keyValues) ? false
+            : queryable.Any(BuildCheck<TEntity>(context, keyValues));
 
         /// <summary>
         /// Asynchronously determines whether an entity with the given primary key exists in a database.
@@ -157,7 +162,8 @@ namespace Microsoft.EntityFrameworkCore
         public static Task<bool> AnyByPrimaryKeyAsync<TEntity>(this IQueryable<TEntity> queryable, DbContext context,
             params object[] keyValues)
             where TEntity : class
-            => queryable.AnyAsync(BuildCheck<TEntity>(context, keyValues));
+            => IsKeyContainsNull(keyValues) ? Task.FromResult(false)
+            : queryable.AnyAsync(BuildCheck<TEntity>(context, keyValues));
 
         /// <summary>
         /// Asynchronously determines whether an entity with the given primary key exists in a database.
@@ -171,7 +177,8 @@ namespace Microsoft.EntityFrameworkCore
         public static Task<bool> AnyByPrimaryKeyAsync<TEntity>(this IQueryable<TEntity> queryable, DbContext context,
             object[] keyValues, CancellationToken cancellationToken)
             where TEntity : class
-            => queryable.AnyAsync(BuildCheck<TEntity>(context, keyValues), cancellationToken);
+            => IsKeyContainsNull(keyValues) ? Task.FromResult(false)
+            : queryable.AnyAsync(BuildCheck<TEntity>(context, keyValues), cancellationToken);
 
         #endregion AnyByPrimaryKey
 
@@ -222,7 +229,8 @@ namespace Microsoft.EntityFrameworkCore
         /// <returns></returns>
         public static TEntity GetByPrimaryKey<TEntity>(this IQueryable<TEntity> queryable, DbContext context, params object[] keyValues)
             where TEntity : class
-            => queryable.SingleOrDefault(BuildCheck<TEntity>(context, keyValues));
+            => IsKeyContainsNull(keyValues) ? null
+            : queryable.SingleOrDefault(BuildCheck<TEntity>(context, keyValues));
 
         /// <summary>
         /// Asynchronously returns an entity with given primary key or a default value if it doesn't exist.
@@ -235,7 +243,8 @@ namespace Microsoft.EntityFrameworkCore
         public static Task<TEntity> GetByPrimaryKeyAsync<TEntity>(this IQueryable<TEntity> queryable, DbContext context,
             params object[] keyValues)
             where TEntity : class
-            => queryable.SingleOrDefaultAsync(BuildCheck<TEntity>(context, keyValues));
+            => IsKeyContainsNull(keyValues) ? Task.FromResult<TEntity>(null)
+            : queryable.SingleOrDefaultAsync(BuildCheck<TEntity>(context, keyValues));
 
         /// <summary>
         /// Asynchronously returns an entity with given primary key or a default value if it doesn't exist.
@@ -249,7 +258,8 @@ namespace Microsoft.EntityFrameworkCore
         public static Task<TEntity> GetByPrimaryKeyAsync<TEntity>(this IQueryable<TEntity> queryable, DbContext context,
             object[] keyValues, CancellationToken cancellationToken)
             where TEntity : class
-            => queryable.SingleOrDefaultAsync(BuildCheck<TEntity>(context, keyValues), cancellationToken);
+            => IsKeyContainsNull(keyValues) ? Task.FromResult<TEntity>(null)
+            : queryable.SingleOrDefaultAsync(BuildCheck<TEntity>(context, keyValues), cancellationToken);
 
         #endregion GetByPrimaryKey
 
@@ -287,7 +297,7 @@ namespace Microsoft.EntityFrameworkCore
         public static object[] GetKeyValues<TEntity>(this DbContext context, TEntity entity)
             => GetKeyValues(entity, context.GetKeyProperties<TEntity>());
 
-        private static object[] GetKeyValues<TEntity>(this TEntity entity, IReadOnlyList<IProperty> keyProperties)
+        private static object[] GetKeyValues<TEntity>(TEntity entity, IReadOnlyList<IProperty> keyProperties)
         {
             var keyValues = new object[keyProperties.Count];
             for (int i = 0; i < keyValues.Length; i++)
@@ -297,27 +307,42 @@ namespace Microsoft.EntityFrameworkCore
             return keyValues;
         }
 
-        private static (IReadOnlyList<IProperty>, object[]) GetKeyPropertiesAndValues<TEntity>(this DbContext context, TEntity entity)
-        {
-            var keyProperties = context.GetKeyProperties<TEntity>();
-            return (keyProperties, entity.GetKeyValues(keyProperties));
-        }
-
 #pragma warning disable RCS1202
+
         private static IReadOnlyList<IProperty> GetKeyProperties<TEntity>(this DbContext context)
             => (context as IDbContextDependencies).Model.FindEntityType(typeof(TEntity)).FindPrimaryKey().Properties;
+
 #pragma warning restore RCS1202
 
         #endregion GetKeyValues
 
-        private static Expression<Func<TEntity, bool>> BuildCheck<TEntity>(DbContext context, TEntity entity)
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private static bool IsKeyContainsNull(object[] keyValues)
         {
-            var (keyProperties, keyValues) = GetKeyPropertiesAndValues(context, entity);
-            return BuildLambda<TEntity>(keyProperties, new ValueBuffer(keyValues));
+            return keyValues?.Any(it => it == null) != false;
+        }
+
+        private static bool IsKeyContainsNull<TEntity>(TEntity entity, DbContext context,
+            out IReadOnlyList<IProperty> keyProperties, out object[] keyValues)
+            where TEntity : class
+        {
+            if (entity == null)
+            {
+                keyProperties = null;
+                keyValues = null;
+                return true;
+            }
+            else
+            {
+                return IsKeyContainsNull(keyValues = GetKeyValues(entity, keyProperties = GetKeyProperties<TEntity>(context)));
+            }
         }
 
         private static Expression<Func<TEntity, bool>> BuildCheck<TEntity>(DbContext context, object[] keyValues) =>
             BuildLambda<TEntity>(context.GetKeyPropertiesForKeyValues<TEntity>(keyValues), new ValueBuffer(keyValues));
+
+        private static Expression<Func<TEntity, bool>> BuildCheck<TEntity>(object[] keyValues, IReadOnlyList<IProperty> keyProperties)
+            => BuildLambda<TEntity>(keyProperties, new ValueBuffer(keyValues));
 
         private static IReadOnlyList<IProperty> GetKeyPropertiesForKeyValues<TEntity>(this DbContext context, object[] keyValues)
         {
