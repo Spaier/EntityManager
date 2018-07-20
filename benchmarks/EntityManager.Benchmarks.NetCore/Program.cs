@@ -7,8 +7,12 @@ namespace EntityManager.Benchmarks.NetCore
     {
         private static void Main()
         {
-            var summary = BenchmarkRunner.Run<GetKeyValuesBenchmark>();
-            Console.ReadKey();
+            var switcher = new BenchmarkSwitcher(new[]
+            {
+                typeof(BuildPredicateBenchmark),
+                typeof(GetKeyValuesBenchmark),
+            });
+            switcher.Run();
         }
     }
 }
