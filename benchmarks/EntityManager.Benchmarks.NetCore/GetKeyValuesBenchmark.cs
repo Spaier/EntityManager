@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using BenchmarkDotNet.Attributes;
 using BenchmarkDotNet.Attributes.Exporters;
 using Microsoft.EntityFrameworkCore;
@@ -92,45 +93,44 @@ namespace EntityManager.Benchmarks.NetCore
         [Benchmark]
         public IEnumerable<object> ArrayBenchmark()
         {
-            yield return GetKeyValuesArray(_singleLong);
-            yield return GetKeyValuesArray(_singleString);
-            yield return GetKeyValuesArray(_singleGuid);
-            yield return GetKeyValuesArray(_doubleLong);
-            yield return GetKeyValuesArray(_doubleStringLong);
-            yield return GetKeyValuesArray(_doubleGuidLong);
+            yield return GetKeyValuesWrapper(GetKeyValuesArray, _singleLong);
+            yield return GetKeyValuesWrapper(GetKeyValuesArray, _singleString);
+            yield return GetKeyValuesWrapper(GetKeyValuesArray, _singleGuid);
+            yield return GetKeyValuesWrapper(GetKeyValuesArray, _doubleLong);
+            yield return GetKeyValuesWrapper(GetKeyValuesArray, _doubleStringLong);
+            yield return GetKeyValuesWrapper(GetKeyValuesArray, _doubleGuidLong);
         }
 
         [Benchmark]
         public IEnumerable<object> LinqBenchMark()
         {
-            yield return GetKeyValuesLinq(_singleLong);
-            yield return GetKeyValuesLinq(_singleString);
-            yield return GetKeyValuesLinq(_singleGuid);
-            yield return GetKeyValuesLinq(_doubleLong);
-            yield return GetKeyValuesLinq(_doubleStringLong);
-            yield return GetKeyValuesLinq(_doubleGuidLong);
+            yield return GetKeyValuesWrapper(GetKeyValuesLinq, _singleLong);
+            yield return GetKeyValuesWrapper(GetKeyValuesLinq, _singleString);
+            yield return GetKeyValuesWrapper(GetKeyValuesLinq, _singleGuid);
+            yield return GetKeyValuesWrapper(GetKeyValuesLinq, _doubleLong);
+            yield return GetKeyValuesWrapper(GetKeyValuesLinq, _doubleStringLong);
+            yield return GetKeyValuesWrapper(GetKeyValuesLinq, _doubleGuidLong);
         }
 
         [Benchmark]
         public IEnumerable<object> PLinqBenchMark()
         {
-            yield return GetKeyValuesPLinq(_singleLong);
-            yield return GetKeyValuesPLinq(_singleString);
-            yield return GetKeyValuesPLinq(_singleGuid);
-            yield return GetKeyValuesPLinq(_doubleLong);
-            yield return GetKeyValuesPLinq(_doubleStringLong);
-            yield return GetKeyValuesPLinq(_doubleGuidLong);
+            yield return GetKeyValuesWrapper(GetKeyValuesPLinq, _singleLong);
+            yield return GetKeyValuesWrapper(GetKeyValuesPLinq, _singleString);
+            yield return GetKeyValuesWrapper(GetKeyValuesPLinq, _singleGuid);
+            yield return GetKeyValuesWrapper(GetKeyValuesPLinq, _doubleLong);
+            yield return GetKeyValuesWrapper(GetKeyValuesPLinq, _doubleStringLong);
+            yield return GetKeyValuesWrapper(GetKeyValuesPLinq, _doubleGuidLong);
         }
 
-        private object[] GetKeyValuesArray<TEntity>(TEntity entity)
-            => GetKeyValuesArray(entity, _context.GetKeyProperties(entity.GetType()));
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private IEnumerable<object> GetKeyValuesWrapper<TEntity>(Func<TEntity, IReadOnlyList<IProperty>, IEnumerable<object>> func,
+            TEntity entity)
+        {
+            return func(entity, _context.GetKeyProperties<TEntity>());
+        }
 
-        private IEnumerable<object> GetKeyValuesLinq<TEntity>(TEntity entity)
-            => GetKeyValuesLinq(entity, _context.GetKeyProperties(entity.GetType())).ToArray();
-
-        private IEnumerable<object> GetKeyValuesPLinq<TEntity>(TEntity entity)
-            => GetKeyValuesPLinq(entity, _context.GetKeyProperties(entity.GetType())).ToArray();
-
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private static object[] GetKeyValuesArray<TEntity>(TEntity entity, IReadOnlyList<IProperty> keyProperties)
         {
             var keyValues = new object[keyProperties.Count];
@@ -141,12 +141,14 @@ namespace EntityManager.Benchmarks.NetCore
             return keyValues;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private static IEnumerable<object> GetKeyValuesLinq<TEntity>(TEntity entity, IReadOnlyList<IProperty> keyProperties)
         {
             return keyProperties
                 .Select(property => entity.GetType().GetProperty(property.PropertyInfo.Name).GetValue(entity));
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private static IEnumerable<object> GetKeyValuesPLinq<TEntity>(TEntity entity, IReadOnlyList<IProperty> keyProperties)
         {
             return keyProperties
