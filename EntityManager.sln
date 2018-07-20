@@ -18,6 +18,10 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "solution", "solution", "{79
 		README.md = README.md
 	EndProjectSection
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "benchmarks", "benchmarks", "{7AF40740-5B6C-460D-B1E1-A3E509687244}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EntityManager.Benchmarks.NetCore", "benchmarks\EntityManager.Benchmarks.NetCore\EntityManager.Benchmarks.NetCore.csproj", "{FF0DD6DE-B1AD-41BE-8588-32AD8CF635C6}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -28,12 +32,17 @@ Global
 		{408A5003-4DD6-4E52-8BC6-D1E4C366FAF2}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{408A5003-4DD6-4E52-8BC6-D1E4C366FAF2}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{408A5003-4DD6-4E52-8BC6-D1E4C366FAF2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FF0DD6DE-B1AD-41BE-8588-32AD8CF635C6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FF0DD6DE-B1AD-41BE-8588-32AD8CF635C6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FF0DD6DE-B1AD-41BE-8588-32AD8CF635C6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FF0DD6DE-B1AD-41BE-8588-32AD8CF635C6}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{408A5003-4DD6-4E52-8BC6-D1E4C366FAF2} = {D829F4BB-D7D6-468D-968A-858473BAFDE8}
+		{FF0DD6DE-B1AD-41BE-8588-32AD8CF635C6} = {7AF40740-5B6C-460D-B1E1-A3E509687244}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {CE8A823B-54D6-42C5-8689-DD1499A031BB}
