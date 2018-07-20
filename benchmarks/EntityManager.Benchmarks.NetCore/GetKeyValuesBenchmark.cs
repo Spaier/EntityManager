@@ -2,11 +2,13 @@
 using System.Collections.Generic;
 using System.Linq;
 using BenchmarkDotNet.Attributes;
+using BenchmarkDotNet.Attributes.Exporters;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata;
 
 namespace EntityManager.Benchmarks.NetCore
 {
+    [RPlotExporter]
     public class GetKeyValuesBenchmark
     {
         public class GetKeyValuesDbContext : DbContext
@@ -88,46 +90,46 @@ namespace EntityManager.Benchmarks.NetCore
         };
 
         [Benchmark]
-        public void ArrayBenchmark()
+        public IEnumerable<object> ArrayBenchmark()
         {
-            GetKeyValuesArray(_singleLong);
-            GetKeyValuesArray(_singleString);
-            GetKeyValuesArray(_singleGuid);
-            GetKeyValuesArray(_doubleLong);
-            GetKeyValuesArray(_doubleStringLong);
-            GetKeyValuesArray(_doubleGuidLong);
+            yield return GetKeyValuesArray(_singleLong);
+            yield return GetKeyValuesArray(_singleString);
+            yield return GetKeyValuesArray(_singleGuid);
+            yield return GetKeyValuesArray(_doubleLong);
+            yield return GetKeyValuesArray(_doubleStringLong);
+            yield return GetKeyValuesArray(_doubleGuidLong);
         }
 
         [Benchmark]
-        public void LinqBenchMark()
+        public IEnumerable<object> LinqBenchMark()
         {
-            GetKeyValuesLinq(_singleLong);
-            GetKeyValuesLinq(_singleString);
-            GetKeyValuesLinq(_singleGuid);
-            GetKeyValuesLinq(_doubleLong);
-            GetKeyValuesLinq(_doubleStringLong);
-            GetKeyValuesLinq(_doubleGuidLong);
+            yield return GetKeyValuesLinq(_singleLong);
+            yield return GetKeyValuesLinq(_singleString);
+            yield return GetKeyValuesLinq(_singleGuid);
+            yield return GetKeyValuesLinq(_doubleLong);
+            yield return GetKeyValuesLinq(_doubleStringLong);
+            yield return GetKeyValuesLinq(_doubleGuidLong);
         }
 
         [Benchmark]
-        public void PLinqBenchMark()
+        public IEnumerable<object> PLinqBenchMark()
         {
-            GetKeyValuesPLinq(_singleLong);
-            GetKeyValuesPLinq(_singleString);
-            GetKeyValuesPLinq(_singleGuid);
-            GetKeyValuesPLinq(_doubleLong);
-            GetKeyValuesPLinq(_doubleStringLong);
-            GetKeyValuesPLinq(_doubleGuidLong);
+            yield return GetKeyValuesPLinq(_singleLong);
+            yield return GetKeyValuesPLinq(_singleString);
+            yield return GetKeyValuesPLinq(_singleGuid);
+            yield return GetKeyValuesPLinq(_doubleLong);
+            yield return GetKeyValuesPLinq(_doubleStringLong);
+            yield return GetKeyValuesPLinq(_doubleGuidLong);
         }
 
         private object[] GetKeyValuesArray<TEntity>(TEntity entity)
             => GetKeyValuesArray(entity, _context.GetKeyProperties(entity.GetType()));
 
         private IEnumerable<object> GetKeyValuesLinq<TEntity>(TEntity entity)
-            => GetKeyValuesLinq(entity, _context.GetKeyProperties(entity.GetType()));
+            => GetKeyValuesLinq(entity, _context.GetKeyProperties(entity.GetType())).ToArray();
 
         private IEnumerable<object> GetKeyValuesPLinq<TEntity>(TEntity entity)
-            => GetKeyValuesPLinq(entity, _context.GetKeyProperties(entity.GetType()));
+            => GetKeyValuesPLinq(entity, _context.GetKeyProperties(entity.GetType())).ToArray();
 
         private static object[] GetKeyValuesArray<TEntity>(TEntity entity, IReadOnlyList<IProperty> keyProperties)
         {
