@@ -129,7 +129,8 @@ namespace Microsoft.EntityFrameworkCore
         /// <param name="keyValues"></param>
         /// <param name="cancellationToken">A <see cref="CancellationToken"/> to observe while waiting for the task to complete.</param>
         /// <returns></returns>
-        public static Task<bool> AnyByPrimaryKeyAsync<TEntity>(this DbContext context, object[] keyValues, CancellationToken cancellationToken)
+        public static Task<bool> AnyByPrimaryKeyAsync<TEntity>(this DbContext context, object[] keyValues,
+            CancellationToken cancellationToken)
             where TEntity : class
             => context.Set<TEntity>().AsNoTracking().AnyByPrimaryKeyAsync(context, keyValues, cancellationToken);
 
@@ -153,7 +154,8 @@ namespace Microsoft.EntityFrameworkCore
         /// <param name="context"></param>
         /// <param name="keyValues"></param>
         /// <returns></returns>
-        public static Task<bool> AnyByPrimaryKeyAsync<TEntity>(this IQueryable<TEntity> queryable, DbContext context, params object[] keyValues)
+        public static Task<bool> AnyByPrimaryKeyAsync<TEntity>(this IQueryable<TEntity> queryable, DbContext context,
+            params object[] keyValues)
             where TEntity : class
             => queryable.AnyAsync(BuildCheck<TEntity>(context, keyValues));
 
@@ -166,8 +168,8 @@ namespace Microsoft.EntityFrameworkCore
         /// <param name="keyValues"></param>
         /// <param name="cancellationToken">A <see cref="CancellationToken"/> to observe while waiting for the task to complete.</param>
         /// <returns></returns>
-        public static Task<bool> AnyByPrimaryKeyAsync<TEntity>(this IQueryable<TEntity> queryable, DbContext context, object[] keyValues,
-            CancellationToken cancellationToken)
+        public static Task<bool> AnyByPrimaryKeyAsync<TEntity>(this IQueryable<TEntity> queryable, DbContext context,
+            object[] keyValues, CancellationToken cancellationToken)
             where TEntity : class
             => queryable.AnyAsync(BuildCheck<TEntity>(context, keyValues), cancellationToken);
 
@@ -205,7 +207,8 @@ namespace Microsoft.EntityFrameworkCore
         /// <param name="keyValues"></param>
         /// <param name="cancellationToken">A <see cref="CancellationToken"/> to observe while waiting for the task to complete.</param>
         /// <returns></returns>
-        public static Task<TEntity> GetByPrimaryKeyAsync<TEntity>(this DbContext context, object[] keyValues, CancellationToken cancellationToken)
+        public static Task<TEntity> GetByPrimaryKeyAsync<TEntity>(this DbContext context, object[] keyValues,
+            CancellationToken cancellationToken)
             where TEntity : class
             => context.Set<TEntity>().AsNoTracking().GetByPrimaryKeyAsync(context, keyValues, cancellationToken);
 
@@ -243,8 +246,8 @@ namespace Microsoft.EntityFrameworkCore
         /// <param name="keyValues"></param>
         /// <param name="cancellationToken">A <see cref="CancellationToken"/> to observe while waiting for the task to complete.</param>
         /// <returns></returns>
-        public static Task<TEntity> GetByPrimaryKeyAsync<TEntity>(this IQueryable<TEntity> queryable, DbContext context, object[] keyValues,
-            CancellationToken cancellationToken)
+        public static Task<TEntity> GetByPrimaryKeyAsync<TEntity>(this IQueryable<TEntity> queryable, DbContext context,
+            object[] keyValues, CancellationToken cancellationToken)
             where TEntity : class
             => queryable.SingleOrDefaultAsync(BuildCheck<TEntity>(context, keyValues), cancellationToken);
 
