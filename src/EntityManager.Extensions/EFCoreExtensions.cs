@@ -300,7 +300,7 @@ namespace Microsoft.EntityFrameworkCore
         internal static IEnumerable<object> GetKeyValues<TEntity>(this TEntity entity, IReadOnlyList<IProperty> keyProperties)
         {
             return keyProperties
-                .Select(property => entity.GetType().GetProperty(property.PropertyInfo.Name).GetValue(entity));
+                .Select(property => typeof(TEntity).GetProperty(property.PropertyInfo.Name).GetValue(entity));
         }
 
         private static IReadOnlyList<IProperty> CheckKeyProperties<TEntity>(this DbContext context, object[] keyValues)
