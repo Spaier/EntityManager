@@ -276,7 +276,7 @@ namespace Microsoft.EntityFrameworkCore
         /// primary key</exception>
         public static object[] GetKeyValues<TEntity>(this DbContext context, params string[] stringKeyValues)
         {
-            if (stringKeyValues == null || stringKeyValues.Length == 0) { throw new ArgumentException(nameof(stringKeyValues)); }
+            if (stringKeyValues is null || stringKeyValues.Length == 0) { throw new ArgumentException(nameof(stringKeyValues)); }
             var keyProperties = context.GetKeyProperties<TEntity>();
             if (stringKeyValues.Length != keyProperties.Count) { throw new ArgumentException(nameof(stringKeyValues)); }
             var array = new object[stringKeyValues.Length];
@@ -341,14 +341,14 @@ namespace Microsoft.EntityFrameworkCore
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private static bool IsKeyContainsNull(IEnumerable<object> keyValues)
         {
-            return keyValues?.Any(it => it == null) != false;
+            return keyValues?.Any(it => it is null) != false;
         }
 
         private static bool IsKeyContainsNull<TEntity>(TEntity entity, DbContext context,
             out IReadOnlyList<IProperty> keyProperties, out IEnumerable<object> keyValues)
             where TEntity : class
         {
-            if (entity == null)
+            if (entity is null)
             {
                 keyProperties = null;
                 keyValues = null;
@@ -393,7 +393,7 @@ namespace Microsoft.EntityFrameworkCore
                                 _valueBufferGetValueMethod,
                                 Expression.Constant(i)),
                             property.ClrType));
-                predicate = predicate == null ? equalsExpression : Expression.AndAlso(predicate, equalsExpression);
+                predicate = predicate is null ? equalsExpression : Expression.AndAlso(predicate, equalsExpression);
             }
             return predicate;
         }
